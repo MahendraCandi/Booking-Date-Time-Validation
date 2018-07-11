@@ -1,0 +1,12 @@
+FutsalDb
+kd_pelanggan	= team-001
+kd_user		= user-001
+hak_akses	= pemilik / kasir
+kd_lap		= lap-001
+jenis_lap	= rumput / vinyl
+status		= true / false
+kd_booking	= book-001
+no_trans	= trans-001
+kd_akun		= akun-001
+jenis_akun	= aktiva / harta / hutang /piutang
+no_jurnal	= jurnal-001

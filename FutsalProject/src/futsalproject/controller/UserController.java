@@ -43,7 +43,7 @@ public class UserController implements Serializable{
         }catch(Exception ex){}
     }
     
-    public void delete(int pk){
+    public void delete(String pk){
         EntityManager em = getEntityManager();
         User us;
         try{
@@ -76,6 +76,19 @@ public class UserController implements Serializable{
         return listUser;
     }
     
+    public List<User> searchUser(String cari){
+        EntityManager em = getEntityManager();
+        List<User> listUser = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT u FROM User u WHERE u.kdUser LIKE :cari OR u.nmUser LIKE :cari OR u.hakAkses LIKE :cari");
+            q.setParameter("cari", "%"+cari+"%");
+            listUser = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listUser;
+    }
+    
     public String kodeOtomatis(){
         EntityManager em=null;
         String kode="User-001";
@@ -90,7 +103,7 @@ public class UserController implements Serializable{
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }
         }catch(NoResultException ex){
-            ex.printStackTrace();
+            return kode;
         }
         return kode;
     }

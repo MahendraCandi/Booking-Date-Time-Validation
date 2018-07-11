@@ -1,22 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.0.1
--- https://www.phpmyadmin.net/
+-- version 4.3.11
+-- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2018 at 08:04 PM
--- Server version: 10.1.32-MariaDB
--- PHP Version: 5.6.36
+-- Generation Time: Jul 12, 2018 at 12:50 AM
+-- Server version: 5.6.24
+-- PHP Version: 5.6.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `futsaldb`
@@ -28,7 +26,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `akun`
 --
 
-CREATE TABLE `akun` (
+CREATE TABLE IF NOT EXISTS `akun` (
   `kd_akun` varchar(8) NOT NULL,
   `nm_akun` varchar(20) NOT NULL,
   `jenis_akun` varchar(10) NOT NULL
@@ -40,7 +38,7 @@ CREATE TABLE `akun` (
 -- Table structure for table `booking`
 --
 
-CREATE TABLE `booking` (
+CREATE TABLE IF NOT EXISTS `booking` (
   `kd_booking` varchar(8) NOT NULL,
   `tgl_booking` date NOT NULL,
   `kd_pelanggan` varchar(8) NOT NULL,
@@ -59,7 +57,7 @@ CREATE TABLE `booking` (
 -- Table structure for table `jurnal`
 --
 
-CREATE TABLE `jurnal` (
+CREATE TABLE IF NOT EXISTS `jurnal` (
   `no_jurnal` varchar(10) NOT NULL,
   `tgl_jurnal` date NOT NULL,
   `no_trans` varchar(9) NOT NULL
@@ -71,7 +69,7 @@ CREATE TABLE `jurnal` (
 -- Table structure for table `jurnal_detail`
 --
 
-CREATE TABLE `jurnal_detail` (
+CREATE TABLE IF NOT EXISTS `jurnal_detail` (
   `id` int(11) NOT NULL,
   `no_jurnal` varchar(10) NOT NULL,
   `kd_akun` varchar(8) NOT NULL,
@@ -85,7 +83,7 @@ CREATE TABLE `jurnal_detail` (
 -- Table structure for table `lapangan`
 --
 
-CREATE TABLE `lapangan` (
+CREATE TABLE IF NOT EXISTS `lapangan` (
   `kd_lap` varchar(7) NOT NULL,
   `jenis_lap` varchar(6) NOT NULL,
   `tarif` double NOT NULL
@@ -97,7 +95,7 @@ CREATE TABLE `lapangan` (
 -- Table structure for table `pelanggan`
 --
 
-CREATE TABLE `pelanggan` (
+CREATE TABLE IF NOT EXISTS `pelanggan` (
   `kd_pelanggan` varchar(8) NOT NULL,
   `nm_pelanggan` varchar(50) NOT NULL,
   `alamat` varchar(100) NOT NULL,
@@ -110,7 +108,7 @@ CREATE TABLE `pelanggan` (
 -- Table structure for table `penyewaan`
 --
 
-CREATE TABLE `penyewaan` (
+CREATE TABLE IF NOT EXISTS `penyewaan` (
   `no_trans` varchar(9) NOT NULL,
   `tgl_sewa` date NOT NULL,
   `kd_pelanggan` varchar(8) NOT NULL,
@@ -131,12 +129,19 @@ CREATE TABLE `penyewaan` (
 -- Table structure for table `user`
 --
 
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `kd_user` varchar(8) NOT NULL,
   `nm_user` varchar(50) NOT NULL,
   `hak_akses` varchar(7) NOT NULL,
   `password` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`kd_user`, `nm_user`, `hak_akses`, `password`) VALUES
+('User-001', 'NPC', 'Owner', '1234');
 
 --
 -- Indexes for dumped tables
@@ -199,8 +204,6 @@ ALTER TABLE `user`
 --
 ALTER TABLE `jurnal_detail`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

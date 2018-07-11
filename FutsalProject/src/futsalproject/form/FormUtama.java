@@ -1,18 +1,25 @@
 package futsalproject.form;
 
+import futsalproject.data.User;
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
 import javax.swing.plaf.basic.BasicMenuBarUI;
 
 public class FormUtama extends javax.swing.JFrame {
 
+    private String nama;
+    private String hakAkses;
+    private String kodeUser;
+    private User userLogin = new User();
+    
     int xx;
     int xy;
     /**
      * Creates new form FormUtama
      */
-    public FormUtama() {
+    public FormUtama(User user) {
         initComponents();
         setLocationRelativeTo(null);
         jMenuBar1.setUI(new BasicMenuBarUI(){
@@ -21,6 +28,9 @@ public class FormUtama extends javax.swing.JFrame {
                 g.fillRect(0, 0, c.getWidth(), c.getHeight());
             }
         });
+        txtKodeUser.setText("Kode User : " + user.getKdUser());
+        txtNamaUser.setText("Nama : " + user.getNmUser());
+        userLogin = user;
     }
 
     /**
@@ -33,24 +43,29 @@ public class FormUtama extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jDesktopPane1 = new javax.swing.JDesktopPane();
+        desktopPane = new javax.swing.JDesktopPane();
+        txtNamaUser = new javax.swing.JLabel();
+        txtKodeUser = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        menuMaster = new javax.swing.JMenu();
+        MenuPelanggan = new javax.swing.JMenuItem();
+        MenuLapangan = new javax.swing.JMenuItem();
+        MenuAkun = new javax.swing.JMenuItem();
+        MenuUser = new javax.swing.JMenuItem();
+        MenuTransaksi = new javax.swing.JMenu();
+        MenuBooking = new javax.swing.JMenuItem();
+        MenuSewa = new javax.swing.JMenuItem();
+        MenuLaporan = new javax.swing.JMenu();
+        MenuLapPenyewaan = new javax.swing.JMenuItem();
+        MenuLapKas = new javax.swing.JMenuItem();
+        MenuLogout = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 184, 148));
+        setMinimumSize(new java.awt.Dimension(900, 600));
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(900, 600));
         getContentPane().setLayout(new java.awt.CardLayout());
 
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
@@ -65,28 +80,45 @@ public class FormUtama extends javax.swing.JFrame {
             }
         });
 
-        jDesktopPane1.setBackground(new java.awt.Color(0, 184, 148));
+        desktopPane.setBackground(new java.awt.Color(0, 184, 148));
+        desktopPane.setLayout(new java.awt.CardLayout());
 
-        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
-        jDesktopPane1.setLayout(jDesktopPane1Layout);
-        jDesktopPane1Layout.setHorizontalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 900, Short.MAX_VALUE)
-        );
-        jDesktopPane1Layout.setVerticalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 579, Short.MAX_VALUE)
-        );
+        txtNamaUser.setForeground(new java.awt.Color(255, 255, 255));
+        txtNamaUser.setText("txtNamaUser");
+
+        txtKodeUser.setForeground(new java.awt.Color(255, 255, 255));
+        txtKodeUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Circled User Male_17px_2.png"))); // NOI18N
+        txtKodeUser.setText("txtKodeUser");
+
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1)
+            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtKodeUser)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtNamaUser)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtKodeUser)
+                    .addComponent(txtNamaUser))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, "card2");
@@ -94,44 +126,70 @@ public class FormUtama extends javax.swing.JFrame {
         jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
         jMenuBar1.setBorderPainted(false);
 
-        jMenu1.setText("Master");
+        menuMaster.setText("Master");
 
-        jMenuItem1.setText("Pelanggan");
-        jMenu1.add(jMenuItem1);
+        MenuPelanggan.setBackground(new java.awt.Color(255, 255, 255));
+        MenuPelanggan.setText("Pelanggan");
+        MenuPelanggan.setOpaque(true);
+        menuMaster.add(MenuPelanggan);
 
-        jMenuItem2.setText("Lapangan");
-        jMenu1.add(jMenuItem2);
+        MenuLapangan.setBackground(new java.awt.Color(255, 255, 255));
+        MenuLapangan.setText("Lapangan");
+        MenuLapangan.setOpaque(true);
+        menuMaster.add(MenuLapangan);
 
-        jMenuItem3.setText("Akun");
-        jMenu1.add(jMenuItem3);
+        MenuAkun.setBackground(new java.awt.Color(255, 255, 255));
+        MenuAkun.setText("Akun");
+        MenuAkun.setOpaque(true);
+        menuMaster.add(MenuAkun);
 
-        jMenuItem4.setText("User");
-        jMenu1.add(jMenuItem4);
+        MenuUser.setBackground(new java.awt.Color(255, 255, 255));
+        MenuUser.setText("User");
+        MenuUser.setOpaque(true);
+        MenuUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuUserActionPerformed(evt);
+            }
+        });
+        menuMaster.add(MenuUser);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(menuMaster);
 
-        jMenu2.setText("Transaksi");
+        MenuTransaksi.setText("Transaksi");
 
-        jMenuItem5.setText("Booking");
-        jMenu2.add(jMenuItem5);
+        MenuBooking.setBackground(new java.awt.Color(255, 255, 255));
+        MenuBooking.setText("Booking");
+        MenuBooking.setOpaque(true);
+        MenuTransaksi.add(MenuBooking);
 
-        jMenuItem6.setText("Penyewaan");
-        jMenu2.add(jMenuItem6);
+        MenuSewa.setBackground(new java.awt.Color(255, 255, 255));
+        MenuSewa.setText("Penyewaan");
+        MenuSewa.setOpaque(true);
+        MenuTransaksi.add(MenuSewa);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(MenuTransaksi);
 
-        jMenu3.setText("Laporan");
+        MenuLaporan.setText("Laporan");
 
-        jMenuItem7.setText("Penyewaan");
-        jMenu3.add(jMenuItem7);
+        MenuLapPenyewaan.setBackground(new java.awt.Color(255, 255, 255));
+        MenuLapPenyewaan.setText("Penyewaan");
+        MenuLapPenyewaan.setOpaque(true);
+        MenuLaporan.add(MenuLapPenyewaan);
 
-        jMenuItem8.setText("Penerimaan Kas");
-        jMenu3.add(jMenuItem8);
+        MenuLapKas.setBackground(new java.awt.Color(255, 255, 255));
+        MenuLapKas.setText("Penerimaan Kas");
+        MenuLapKas.setOpaque(true);
+        MenuLaporan.add(MenuLapKas);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(MenuLaporan);
 
-        jMenu4.setText("Logout");
-        jMenuBar1.add(jMenu4);
+        MenuLogout.setText("Logout");
+        MenuLogout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MenuLogoutMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(MenuLogout);
 
         setJMenuBar(jMenuBar1);
 
@@ -148,6 +206,18 @@ public class FormUtama extends javax.swing.JFrame {
         int y = evt.getYOnScreen();
         this.setLocation(x -xx, y -xy);
     }//GEN-LAST:event_jPanel1MouseDragged
+
+    private void MenuUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuUserActionPerformed
+        FormUser fu = new FormUser();
+        showForm(fu);
+    }//GEN-LAST:event_MenuUserActionPerformed
+
+    private void MenuLogoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuLogoutMouseClicked
+        FormLogin FL=new FormLogin();
+        this.dispose();
+        FL.setVisible(true);
+        FL.setAutoRequestFocus(true);
+    }//GEN-LAST:event_MenuLogoutMouseClicked
 
     /**
      * @param args the command line arguments
@@ -179,26 +249,41 @@ public class FormUtama extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormUtama().setVisible(true);
+                //new FormUtama().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JDesktopPane jDesktopPane1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuItem MenuAkun;
+    private javax.swing.JMenuItem MenuBooking;
+    private javax.swing.JMenuItem MenuLapKas;
+    private javax.swing.JMenuItem MenuLapPenyewaan;
+    private javax.swing.JMenuItem MenuLapangan;
+    private javax.swing.JMenu MenuLaporan;
+    private javax.swing.JMenu MenuLogout;
+    private javax.swing.JMenuItem MenuPelanggan;
+    private javax.swing.JMenuItem MenuSewa;
+    private javax.swing.JMenu MenuTransaksi;
+    private javax.swing.JMenuItem MenuUser;
+    private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JMenu menuMaster;
+    private javax.swing.JLabel txtKodeUser;
+    private javax.swing.JLabel txtNamaUser;
     // End of variables declaration//GEN-END:variables
+
+    private void showForm(Object obj){
+        JInternalFrame jf=null;
+        jf=(JInternalFrame) obj;
+        desktopPane.add(jf);
+        jf.setVisible(true);
+        try {
+            jf.setMaximizable(true);
+            jf.setSelected(true);
+        } catch (Exception e) {
+        }
+    }
 }

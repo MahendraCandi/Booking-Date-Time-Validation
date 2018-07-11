@@ -10,3 +10,6 @@ no_trans	= trans-001
 kd_akun		= akun-001
 jenis_akun	= aktiva / harta / hutang /piutang
 no_jurnal	= jurnal-001
+
+0, 184, 148
+85, 239, 196

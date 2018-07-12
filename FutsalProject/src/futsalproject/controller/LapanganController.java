@@ -76,12 +76,25 @@ public class LapanganController implements Serializable{
         return listLapangan;
     }
     
+    public List<Lapangan> searchLapangan(String cari){
+        EntityManager em = getEntityManager();
+        List<Lapangan> listLapangan = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT l FROM Lapangan l WHERE l.kdLap LIKE :cari OR l.jenisLap LIKE :cari OR l.tarif LIKE :cari");
+            q.setParameter("cari", "%"+cari+"%");
+            listLapangan = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listLapangan;
+    }
+    
     public String kodeOtomatis(){
         EntityManager em=null;
         String kode="Lap-001";
         try{
             em=getEntityManager();
-            Query q=em.createQuery("SELECT a FROM Lapangan a ORDER BY a.kdLap DESC");
+            Query q=em.createQuery("SELECT l FROM Lapangan l ORDER BY l.kdLap DESC");
             q.setMaxResults(1);
             Lapangan lapangan=(Lapangan) q.getSingleResult();
             if(q!=null){
@@ -90,8 +103,7 @@ public class LapanganController implements Serializable{
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }
         }catch(NoResultException ex){
-            ex.printStackTrace();
-            return null;
+            return kode;
         }
         return kode;
     }

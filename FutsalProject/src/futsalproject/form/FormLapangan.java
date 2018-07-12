@@ -1,8 +1,8 @@
 package futsalproject.form;
 
 import futsalproject.FutsalProject;
-import futsalproject.controller.UserController;
-import futsalproject.data.User;
+import futsalproject.controller.LapanganController;
+import futsalproject.data.Lapangan;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -11,45 +11,42 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class FormUser extends javax.swing.JInternalFrame {
+public class FormLapangan extends javax.swing.JInternalFrame {
 
-    UserController uCont = new UserController(FutsalProject.emf);
-    User user = new User();
+    LapanganController lapCont = new LapanganController((FutsalProject.emf));
+    Lapangan lapangan = new Lapangan();
     DefaultTableModel model;
     /**
-     * Creates new form FormUser
+     * Creates new form FormLapangan
      */
-    public FormUser() {
+    public FormLapangan() {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
         model=new DefaultTableModel();
-        model.addColumn("Kode User");
-        model.addColumn("Nama");
-        model.addColumn("Hak Akses");
-        model.addColumn("Password");
-        tableUser.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
+        model.addColumn("Kode Lapangan");
+        model.addColumn("Jenis Lapangan");
+        model.addColumn("Tarif");
+        tableLapangan.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
         tidakAktif();
     }
-    
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<User> list = uCont.findAllUser();
-        for(User u : list){
-            Object[] obj = new Object[4];
-            obj[0] = u.getKdUser();
-            obj[1] = u.getNmUser();
-            obj[2] = u.getHakAkses();
-            obj[3] = u.getPassword();
+        List<Lapangan> list = lapCont.findAllLapangan();
+        for(Lapangan l : list){
+            Object[] obj = new Object[3];
+            obj[0] = l.getKdLap();
+            obj[1] = l.getJenisLap();
+            obj[2] = l.getTarif();
             model.addRow(obj);
         }
-        tableUser.setModel(model);
+        tableLapangan.setModel(model);
     }
     
     private void cariTable(String cari){
-        List<User> listUser = uCont.searchUser(cari);
-        if(listUser.size() == 0){
+        List<Lapangan> listLapangan = lapCont.searchLapangan(cari);
+        if(listLapangan.size() == 0){
             JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
         }else{
             if(cari.isEmpty()){
@@ -57,29 +54,27 @@ public class FormUser extends javax.swing.JInternalFrame {
             }else{
                 model.getDataVector().removeAllElements();
                 model.fireTableDataChanged();
-                for(User u : listUser){
-                Object[] obj = new Object[4];
-                obj[0] = u.getKdUser();
-                obj[1] = u.getNmUser();
-                obj[2] = u.getHakAkses();
-                obj[3] = u.getPassword();
+                for(Lapangan l : listLapangan){
+                Object[] obj = new Object[3];
+                obj[0] = l.getKdLap();
+                obj[1] = l.getJenisLap();
+                obj[2] = l.getTarif();
                 model.addRow(obj);
             }
-            tableUser.setModel(model);
+            tableLapangan.setModel(model);
             }
         }
-    }   
+    } 
     
     private void seleksiBaris(){
-        tableUser.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tableLapangan.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                int baris=tableUser.getSelectedRow(); 
+                int baris=tableLapangan.getSelectedRow(); 
                 if(baris != -1){                        
-                    txtKodeUser.setText(tableUser.getValueAt(baris, 0).toString());
-                    txtNama.setText(tableUser.getValueAt(baris, 1).toString());
-                    cmbAkses.setSelectedItem(tableUser.getValueAt(baris, 2).toString());
-                    txtPassword.setText(tableUser.getValueAt(baris, 3).toString());
+                    txtKode.setText(tableLapangan.getValueAt(baris, 0).toString());
+                    cmbJenis.setSelectedItem(tableLapangan.getValueAt(baris, 1).toString());
+                    txtTarif.setText(tableLapangan.getValueAt(baris, 2).toString());
                 }
             }
         });
@@ -100,28 +95,24 @@ public class FormUser extends javax.swing.JInternalFrame {
         btnTambah = new javax.swing.JButton();
         btnSimpan = new javax.swing.JButton();
         btnHapus = new javax.swing.JButton();
-        txtKodeUser = new javax.swing.JTextField();
+        txtKode = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtNama = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        cmbAkses = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
+        txtTarif = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        cmbJenis = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableUser = new javax.swing.JTable();
+        tableLapangan = new javax.swing.JTable();
         txtCari = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-
-        setBackground(new java.awt.Color(85, 239, 196));
 
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("Kode User");
+        jLabel1.setText("Kode Lapngan");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
@@ -156,65 +147,61 @@ public class FormUser extends javax.swing.JInternalFrame {
         });
         jPanel2.add(btnHapus);
 
-        txtKodeUser.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtKode.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("Nama User");
-
-        txtNama.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("Hak Akses");
-
-        cmbAkses.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbAkses.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kasir", "Pemilik" }));
+        jLabel2.setText("Jenis Lapangan");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("Password");
+        jLabel4.setText("Tarif");
 
-        txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTarif.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Form User");
+        jLabel5.setText("Form Lapangan");
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
+
+        cmbJenis.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbJenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Rumput", "Vinyl" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1))
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 577, Short.MAX_VALUE))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jSeparator1)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtTarif, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                            .addComponent(txtKode, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbJenis, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNama, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtKodeUser, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbAkses, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,33 +212,29 @@ public class FormUser extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtKodeUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtKode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbJenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(cmbAkses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                    .addComponent(txtTarif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 98, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        tableUser.setModel(new javax.swing.table.DefaultTableModel(
+        tableLapangan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Kode User", "Nama User", "Hak Akses", "Password"
+                "Kode Lapangan", "Jenis Lapangan", "Tarif"
             }
         ));
-        jScrollPane1.setViewportView(tableUser);
+        jScrollPane1.setViewportView(tableLapangan);
 
         txtCari.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -297,12 +280,6 @@ public class FormUser extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            cariTable(txtCari.getText());
-        }
-    }//GEN-LAST:event_txtCariKeyPressed
-
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         aktif();
         bersih();
@@ -318,15 +295,20 @@ public class FormUser extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnHapusActionPerformed
 
+    private void txtCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            cariTable(txtCari.getText());
+        }
+    }//GEN-LAST:event_txtCariKeyPressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHapus;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JButton btnTambah;
-    private javax.swing.JComboBox<String> cmbAkses;
+    private javax.swing.JComboBox<String> cmbJenis;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -334,68 +316,63 @@ public class FormUser extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable tableUser;
+    private javax.swing.JTable tableLapangan;
     private javax.swing.JTextField txtCari;
-    private javax.swing.JTextField txtKodeUser;
-    private javax.swing.JTextField txtNama;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtKode;
+    private javax.swing.JTextField txtTarif;
     // End of variables declaration//GEN-END:variables
 
     private void tidakAktif(){
-        txtKodeUser.setEnabled(false);
-        cmbAkses.setEnabled(false);
-        txtNama.setEnabled(false);
-        txtPassword.setEnabled(false);
+        txtKode.setEnabled(false);
+        cmbJenis.setEnabled(false);
+        txtTarif.setEnabled(false);
         txtCari.setEnabled(false);
         btnSimpan.setEnabled(false);
         btnHapus.setEnabled(false);
+        
     }
     
     private void aktif(){
-        cmbAkses.setEnabled(true);
-        txtNama.setEnabled(true);
-        txtPassword.setEnabled(true);
+        txtKode.setEnabled(true);
+        cmbJenis.setEnabled(true);
+        txtTarif.setEnabled(true);
         txtCari.setEnabled(true);
         btnSimpan.setEnabled(true);
         btnHapus.setEnabled(true);
         seleksiBaris();
-        
+        txtTarif.requestFocus();
     }
     
     private void bersih(){
-        txtKodeUser.setText(uCont.kodeOtomatis());
-        cmbAkses.setSelectedIndex(0);
-        txtNama.setText("");
-        txtPassword.setText("");
+        txtKode.setText(lapCont.kodeOtomatis());
+        cmbJenis.setSelectedIndex(0);
+        txtTarif.setText("");
         txtCari.setText("");
         showTable();
-        txtNama.requestFocus();
     }
     
-    public void simpan() {
-        if(txtNama.getText().equalsIgnoreCase("") || txtPassword.getText().equalsIgnoreCase("")){
-            JOptionPane.showMessageDialog(null, "Data tidak valid!");
+    private void simpan(){
+        if(txtTarif.getText().equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Masukan harga tarif!");
         }else{
-            user=uCont.findOneUser(txtKodeUser.getText());
-            User us=new User();
-            if(user==null){
-                us.setKdUser(txtKodeUser.getText());
-                us.setNmUser(txtNama.getText());
-                us.setHakAkses(cmbAkses.getSelectedItem().toString());
-                us.setPassword(txtPassword.getText());
+            lapangan=lapCont.findOneLapangan(txtKode.getText());
+            Lapangan lap=new Lapangan();
+            if(lapangan==null){
+                lap.setKdLap(txtKode.getText());
+                lap.setJenisLap(cmbJenis.getSelectedItem().toString());
+                lap.setTarif(Double.parseDouble(txtTarif.getText()));
                 try{
-                    uCont.save(us);
+                    lapCont.save(lap);
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
                 JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
             }else{
-                us.setKdUser(txtKodeUser.getText());
-                us.setNmUser(txtNama.getText());
-                us.setHakAkses(cmbAkses.getSelectedItem().toString());
-                us.setPassword(txtPassword.getText());
+                lap.setKdLap(txtKode.getText());
+                lap.setJenisLap(cmbJenis.getSelectedItem().toString());
+                lap.setTarif(Double.parseDouble(txtTarif.getText()));
                 try{
-                    uCont.update(us);
+                    lapCont.update(lap);
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
@@ -406,13 +383,13 @@ public class FormUser extends javax.swing.JInternalFrame {
     }
     
     private void hapus() {
-        int baris = tableUser.getSelectedRow();
+        int baris = tableLapangan.getSelectedRow();
         if(baris==-1){
             JOptionPane.showMessageDialog(null, "Pilih data yang mau dihapus!");
         }else{
         try{
-            User userPK = uCont.findOneUser(txtKodeUser.getText());
-            uCont.delete(userPK.getKdUser());
+            Lapangan lapanganPK = lapCont.findOneLapangan(txtKode.getText());
+            lapCont.delete(lapanganPK.getKdLap());
              JOptionPane.showMessageDialog(null, "Data telah dihapus!");
             }catch(Exception ex){
                 ex.printStackTrace();

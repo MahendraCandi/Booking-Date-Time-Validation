@@ -136,6 +136,11 @@ public class FormUtama extends javax.swing.JFrame {
         MenuLapangan.setBackground(new java.awt.Color(255, 255, 255));
         MenuLapangan.setText("Lapangan");
         MenuLapangan.setOpaque(true);
+        MenuLapangan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuLapanganActionPerformed(evt);
+            }
+        });
         menuMaster.add(MenuLapangan);
 
         MenuAkun.setBackground(new java.awt.Color(255, 255, 255));
@@ -218,6 +223,11 @@ public class FormUtama extends javax.swing.JFrame {
         FL.setVisible(true);
         FL.setAutoRequestFocus(true);
     }//GEN-LAST:event_MenuLogoutMouseClicked
+
+    private void MenuLapanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuLapanganActionPerformed
+        FormLapangan fl = new FormLapangan();
+        showForm(fl);
+    }//GEN-LAST:event_MenuLapanganActionPerformed
 
     /**
      * @param args the command line arguments

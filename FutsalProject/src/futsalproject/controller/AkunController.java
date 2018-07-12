@@ -42,7 +42,7 @@ public class AkunController implements Serializable{
         }catch(Exception ex){}
     }
     
-    public void delete(int pk){
+    public void delete(String pk){
         EntityManager em = getEntityManager();
         Akun us;
         try{
@@ -75,6 +75,19 @@ public class AkunController implements Serializable{
         return listAkun;
     }
     
+    public List<Akun> searchAkun(String cari){
+        EntityManager em = getEntityManager();
+        List<Akun> listAkun = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT a FROM Akun a WHERE a.kdAkun LIKE :cari OR a.nmAkun LIKE :cari OR a.jenisAkun LIKE :cari");
+            q.setParameter("cari", "%"+cari+"%");
+            listAkun = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listAkun;
+    }
+    
     public String kodeOtomatis(){
         EntityManager em=null;
         String kode="Akun-001";
@@ -89,8 +102,7 @@ public class AkunController implements Serializable{
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }
         }catch(NoResultException ex){
-            ex.printStackTrace();
-            return null;
+            return kode;
         }
         return kode;
     }

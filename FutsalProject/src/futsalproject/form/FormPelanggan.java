@@ -360,12 +360,71 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
     }
     
     private void aktif(){
-        txtNamaPelanggan.setEnabled(false);
-        txtNoHP.setEnabled(false);
-        txtAlamat.setEnabled(false);
-        txtCari.setEnabled(false);
-        btnSimpan.setEnabled(false);
-        btnHapus.setEnabled(false);
+        txtNamaPelanggan.setEnabled(true);
+        txtNoHP.setEnabled(true);
+        txtAlamat.setEnabled(true);
+        txtCari.setEnabled(true);
+        btnSimpan.setEnabled(true);
+        btnHapus.setEnabled(true);
         seleksiBaris();
+    }
+    
+    private void bersih(){
+        txtKodePelanggan.setText(pCont.kodeOtomatis());
+        txtNamaPelanggan.setText("");
+        txtNoHP.setText("");
+        txtAlamat.setText("");
+        txtCari.setText("");
+        showTable();
+        txtNamaPelanggan.requestFocus();
+    }
+    
+    private void simpan(){
+        if(txtNamaPelanggan.getText().equalsIgnoreCase("") || txtNoHP.getText().equalsIgnoreCase("") || txtAlamat.getText().equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Data tidak valid!");
+        }else{
+            pelanggan=pCont.findOnePelanggan(txtKodePelanggan.getText());
+            Pelanggan pel=new Pelanggan();
+            if(pelanggan==null){
+                pel.setKdPelanggan(txtKodePelanggan.getText());
+                pel.setNmPelanggan(txtNamaPelanggan.getText());
+                pel.setNoHp(txtNoHP.getText());
+                pel.setAlamat(txtAlamat.getText());
+                try{
+                    pCont.save(pel);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
+            }else{
+                pel.setKdPelanggan(txtKodePelanggan.getText());
+                pel.setNmPelanggan(txtNamaPelanggan.getText());
+                pel.setNoHp(txtNoHP.getText());
+                pel.setAlamat(txtAlamat.getText());
+                try{
+                    pCont.update(pel);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null, "Data berhasil diupdate!");
+            }
+            bersih();
+        }
+    }
+    
+    private void hapus(){
+        int baris = tablePelanggan.getSelectedRow();
+        if(baris==-1){
+            JOptionPane.showMessageDialog(null, "Pilih data yang mau dihapus!");
+        }else{
+        try{
+            Pelanggan pelangganPK = pCont.findOnePelanggan(txtKodePelanggan.getText());
+            pCont.delete(pelangganPK.getKdPelanggan());
+             JOptionPane.showMessageDialog(null, "Data telah dihapus!");
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+            bersih();
+        }
     }
 }

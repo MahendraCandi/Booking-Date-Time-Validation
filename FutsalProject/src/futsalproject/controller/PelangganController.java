@@ -103,8 +103,7 @@ public class PelangganController implements Serializable{
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }
         }catch(NoResultException ex){
-            ex.printStackTrace();
-            return null;
+            return kode;
         }
         return kode;
     }

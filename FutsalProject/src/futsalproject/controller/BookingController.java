@@ -64,11 +64,34 @@ public class BookingController implements Serializable{
         }finally{}
     }
     
-    public List<Booking> findAllBooking(){
+    public List<Object[]> findAllBooking(){
         EntityManager em = getEntityManager();
-        List<Booking> listBooking = new ArrayList<>();
+        List<Object[]> listBooking = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT b FROM Booking b");
+            Query q = em.createQuery("SELECT b, p.nmPelanggan FROM Booking b, Pelanggan p WHERE b.kdPelanggan = p.kdPelanggan");
+            listBooking = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listBooking;
+    }
+    
+    public List<Object[]> searchBooking(String cari){
+        EntityManager em = getEntityManager();
+        List<Object[]> listBooking = new ArrayList<>();
+        try {
+            Query q = em.createNativeQuery("SELECT b.kd_booking, b.tgl_booking, b.kd_pelanggan, p.nm_pelanggan, b.kd_lap, b.tgl_pakai, b.jam_masuk, b.jam_keluar\n" +
+                "FROM booking b\n" +
+                "INNER JOIN pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n" +
+                "WHERE b.kd_booking LIKE ?cari\n" +
+                "OR b.kd_pelanggan LIKE ?cari\n" +
+                "OR p.nm_pelanggan LIKE ?cari\n" +
+                "OR b.kd_lap LIKE ?cari\n" +
+                "OR b.tgl_booking LIKE ?cari\n" +
+                "OR b.tgl_pakai LIKE ?cari\n" +
+                "OR b.jam_masuk LIKE ?cari\n" +
+                "OR b.jam_keluar LIKE ?cari");
+            q.setParameter("cari", "%"+cari+"%");
             listBooking = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

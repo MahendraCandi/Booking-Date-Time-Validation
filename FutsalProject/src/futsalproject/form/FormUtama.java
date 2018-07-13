@@ -131,6 +131,11 @@ public class FormUtama extends javax.swing.JFrame {
         MenuPelanggan.setBackground(new java.awt.Color(255, 255, 255));
         MenuPelanggan.setText("Pelanggan");
         MenuPelanggan.setOpaque(true);
+        MenuPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuPelangganActionPerformed(evt);
+            }
+        });
         menuMaster.add(MenuPelanggan);
 
         MenuLapangan.setBackground(new java.awt.Color(255, 255, 255));
@@ -170,6 +175,11 @@ public class FormUtama extends javax.swing.JFrame {
         MenuBooking.setBackground(new java.awt.Color(255, 255, 255));
         MenuBooking.setText("Booking");
         MenuBooking.setOpaque(true);
+        MenuBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuBookingActionPerformed(evt);
+            }
+        });
         MenuTransaksi.add(MenuBooking);
 
         MenuSewa.setBackground(new java.awt.Color(255, 255, 255));
@@ -238,6 +248,16 @@ public class FormUtama extends javax.swing.JFrame {
         FormAkun fa = new FormAkun();
         showForm(fa);
     }//GEN-LAST:event_MenuAkunActionPerformed
+
+    private void MenuPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuPelangganActionPerformed
+        FormPelanggan fp = new FormPelanggan();
+        showForm(fp);
+    }//GEN-LAST:event_MenuPelangganActionPerformed
+
+    private void MenuBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuBookingActionPerformed
+        FormBooking fb = new FormBooking(userLogin);
+        showForm(fb);
+    }//GEN-LAST:event_MenuBookingActionPerformed
 
     /**
      * @param args the command line arguments

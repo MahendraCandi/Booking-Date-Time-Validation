@@ -76,6 +76,19 @@ public class PelangganController implements Serializable{
         return listPelanggan;
     }
     
+    public List<Pelanggan> searchPelanggan(String cari){
+        EntityManager em = getEntityManager();
+        List<Pelanggan> listPelanggan = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT p FROM Pelanggan p WHERE p.kdPelanggan LIKE :cari OR p.nmPelanggan LIKE :cari OR p.noHp LIKE :cari OR p.alamat LIKE :cari");
+            q.setParameter("cari", "%"+cari+"%");
+            listPelanggan = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listPelanggan;
+    }
+    
     public String kodeOtomatis(){
         EntityManager em=null;
         String kode="Team-001";

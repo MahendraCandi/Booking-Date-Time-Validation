@@ -80,7 +80,7 @@ public class LapanganController implements Serializable{
         EntityManager em = getEntityManager();
         List<Lapangan> listLapangan = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT l FROM Lapangan l WHERE l.kdLap LIKE :cari OR l.jenisLap LIKE :cari OR l.tarif LIKE :cari");
+            Query q = em.createQuery("SELECT l FROM Lapangan l WHERE l.kdLap LIKE :cari OR l.jenisLap LIKE :cari");
             q.setParameter("cari", "%"+cari+"%");
             listLapangan = q.getResultList();
         } catch (Exception e) {

@@ -4,6 +4,7 @@ import futsalproject.data.Booking;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -99,6 +100,33 @@ public class BookingController implements Serializable{
         return listBooking;
     }
     
+    // validasi kode lap, tanggal, jam
+    public List<Object[]> findValidasiLapangan(String kdLap, Date tglPakai, Date jamMasuk, Date jamKeluar){
+        EntityManager em = getEntityManager();
+        List<Object[]> listBooking = new ArrayList<>();
+        try {
+            Query q = em.createNativeQuery("SELECT t1.kd_booking, t1.kd_lap, t1.tgl_pakai, t1.jam_masuk, t1.jam_keluar\n" +
+                "FROM\n" +
+                "(\n" +
+                "SELECT b.kd_booking, b.kd_lap, b.tgl_pakai, b.jam_masuk, b.jam_keluar\n" +
+                "FROM booking b\n" +
+                "WHERE b.tgl_pakai = ?tglPakai AND b.kd_lap = ?kdLap\n" +
+                ") t1\n" +
+                "WHERE\n" +
+                "(?jamMasuk > t1.jam_masuk AND ?jamMasuk < t1.jam_keluar)\n" +
+                "OR (?jamKeluar > t1.jam_masuk AND ?jamKeluar < t1.jam_keluar)\n" +
+                "OR (?jamMasuk = t1.jam_masuk AND ?jamKeluar = t1.jam_keluar)");
+            q.setParameter("kdLap", kdLap);
+            q.setParameter("tglPakai", tglPakai);
+            q.setParameter("jamMasuk", jamMasuk);
+            q.setParameter("jamKeluar", jamKeluar);
+            listBooking = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listBooking;
+    }
+    
     public String kodeOtomatis(){
         EntityManager em=null;
         String kode="Book-001";
@@ -113,8 +141,7 @@ public class BookingController implements Serializable{
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }
         }catch(NoResultException ex){
-            ex.printStackTrace();
-            return null;
+            return kode;
         }
         return kode;
     }

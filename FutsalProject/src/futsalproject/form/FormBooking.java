@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -43,6 +44,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
         showTable();
         renderTableTgl();
         renderTableJam();
+        userLogin = user;
     }
     
     private void showTable(){
@@ -127,8 +129,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         btnTambah = new javax.swing.JButton();
-        btnSimpan = new javax.swing.JButton();
-        btnHapus = new javax.swing.JButton();
+        btnDetail = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         txtCari = new javax.swing.JTextField();
@@ -151,25 +152,15 @@ public class FormBooking extends javax.swing.JInternalFrame {
         });
         jPanel2.add(btnTambah);
 
-        btnSimpan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        btnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Check File_20px_5.png"))); // NOI18N
-        btnSimpan.setText("Lihat Detail");
-        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+        btnDetail.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnDetail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Check File_20px_5.png"))); // NOI18N
+        btnDetail.setText("Lihat Detail");
+        btnDetail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSimpanActionPerformed(evt);
+                btnDetailActionPerformed(evt);
             }
         });
-        jPanel2.add(btnSimpan);
-
-        btnHapus.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        btnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Trash_20px.png"))); // NOI18N
-        btnHapus.setText("Hapus");
-        btnHapus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHapusActionPerformed(evt);
-            }
-        });
-        jPanel2.add(btnHapus);
+        jPanel2.add(btnDetail);
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -186,7 +177,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
         });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("Cari");
 
@@ -255,25 +246,32 @@ public class FormBooking extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtCariKeyPressed
 
-    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
-//        if(JOptionPane.showConfirmDialog(null, "Hapus data ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-//            hapus();
-//        }
-    }//GEN-LAST:event_btnHapusActionPerformed
-
-    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-//        simpan();
-    }//GEN-LAST:event_btnSimpanActionPerformed
+    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
+        int baris = tableBooking.getSelectedRow();
+        if(baris == -1){
+            JOptionPane.showMessageDialog(null, "Pilih data yang mau dilihat!");
+        }else{
+            booking = bCont.findOneBooking(tableBooking.getValueAt(baris, 0).toString());
+        }
+        FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
+        JDesktopPane desktopPane = getDesktopPane();
+        desktopPane.add(fbt);
+        fbt.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnDetailActionPerformed
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-//        aktif();
-//        bersih();
+        booking = null;
+        FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
+        JDesktopPane desktopPane = getDesktopPane();
+        desktopPane.add(fbt);
+        fbt.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnTambahActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnHapus;
-    private javax.swing.JButton btnSimpan;
+    private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnTambah;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

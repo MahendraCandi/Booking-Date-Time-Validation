@@ -13,3 +13,12 @@ no_jurnal	= jurnal-001
 
 0, 184, 148
 85, 239, 196
+
+Kode Booking	Object	true	true
+Tgl. Bookingr	Object	true	true
+Kode Pelanggan	Object	true	true
+Nama Pelanggan	Object	true	true
+Kode Lapangan	Object	true	true
+tgl. Pakai	Object	true	true
+Jam Masuk	Object	true	true
+Jam Keluar	Object	true	true

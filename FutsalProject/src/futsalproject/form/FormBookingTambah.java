@@ -38,7 +38,13 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     DefaultTableModel model;
     
     SimpleDateFormat sdf=new SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("in-ID"));
-        
+    double totalTarif, totalJam;
+    long hargaMalam;
+    long hargaSore;
+    long jamMalam;
+    long jamSore;
+    double diskon;
+    String vKodeBook, vNama;
     /**
      * Creates new form FormBookingTambah
      */
@@ -55,9 +61,12 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         userLogin = user;
         this.booking = booking;
         DialogPelanggan.setLocationRelativeTo(null);
+        tidakAktif();
         validasiBooking();
         showTable();
         seleksiBaris();
+        txtUser.setText(userLogin.getNmUser());
+        
     }
     
     private void validasiBooking(){
@@ -72,101 +81,179 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
             jamSpinner(spinJamKeluar);
             comboBoxJenisLapangan();
             comboBoxKodeLapangan();
+            aktif();
+        }else{
+            pelanggan = pCont.findOnePelanggan(booking.getKdPelanggan());
+            lapangan = lCont.findOneLapangan(booking.getKdLap());
+            jamSpinner(spinJamMasuk);
+            jamSpinner(spinJamKeluar);
+            comboBoxJenisLapangan();
+            comboBoxKodeLapangan();
+            txtKodeBooking.setText(booking.getKdBooking());
+            txtKodePelanggan.setText(booking.getKdPelanggan());
+            txtNamaPelanggan.setText(pelanggan.getNmPelanggan());
+            txtNoHandphone.setText(pelanggan.getNoHp());
+            txtAlamat.setText(pelanggan.getAlamat());
+            txtUser.setText(booking.getKdUser());
+            txtTglBooking.setText(sdf.format(booking.getTglBooking()));
+            jdcTanggalPakai.setDate(booking.getTglPakai());
+            cmbJenisLapangan.setSelectedItem(lapangan.getJenisLap());
+            cmbKodeLapangan.setSelectedItem(lapangan.getKdLap());
+            txtTarif.setText(String.valueOf(lapangan.getTarif()));
+            spinJamMasuk.setValue((booking.getJamMasuk()));
+            spinJamKeluar.setValue((booking.getJamKeluar()));
+            txtUangDP.setText(String.valueOf(booking.getUangDp()));
+            hitung();
             
         }
     }
-    
-    private boolean validasiJam(){
+
+    private boolean validasiJam2(){
         boolean valid=false;
-        try{
-            System.out.println("1");
-            Date masuk=(Date) spinJamMasuk.getValue();
-            System.out.println("2");
-            Date keluar=(Date) spinJamKeluar.getValue();
-            System.out.println("3");
-            Date tglPakai=(jdcTanggalPakai.getDate());
-            System.out.println("4");
-            String kodeLap = cmbKodeLapangan.getSelectedItem().toString();
-            System.out.println("5");
-            List<Object[]> hasil=bCont.findValidasiLapangan(kodeLap, tglPakai, masuk, keluar);
-            System.out.println("6");
-            for(Object[] b : hasil){
-                System.out.println("1");
-                System.out.println( "TESS "+b[0]);
-                System.out.println(b[1]);
-                System.out.println(b[2]);
-                System.out.println(b[3]);
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+            String masuk = df.format(spinJamMasuk.getValue());
+            String keluar = df.format(spinJamKeluar.getValue());
+            
+            DateFormat dff = new SimpleDateFormat("HH:mm");
+            Date jamMasuk = dff.parse(masuk);
+            Date jamKeluar = dff.parse(keluar);
+            if(booking == null){
+                List<Booking> list = bCont.findValidasiLapangan2(cmbKodeLapangan.getSelectedItem().toString(), jdcTanggalPakai.getDate());
+                for(Booking b : list){
+                    if(jamMasuk.compareTo(b.getJamMasuk()) == -1){
+                        if(jamKeluar.compareTo(b.getJamMasuk()) == 1 && jamKeluar.compareTo(b.getJamKeluar()) == -1){
+                            valid = true;
+                        }else if(jamKeluar.compareTo(b.getJamMasuk()) == 1 && jamKeluar.compareTo(b.getJamKeluar()) == 0){
+                            valid =true;
+                        }else if(jamKeluar.compareTo(b.getJamMasuk()) == 1 && jamKeluar.compareTo(b.getJamKeluar()) == 1){
+                            valid =true;
+                        }
+                    }else if(jamMasuk.compareTo(b.getJamMasuk()) == 0){
+                        valid = true;
+                    }else if(jamMasuk.compareTo(b.getJamMasuk()) == 1 && jamMasuk.compareTo(b.getJamKeluar()) == -1){
+                        valid = true;
+                    }
+                    vKodeBook = b.getKdBooking();
+                }
             }
-            System.out.println("7");
-            if(!hasil.isEmpty()){
-                System.out.println("8");
-                valid=true;
-            }
-        }catch(Exception ex){}
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return valid;
     }
     
     private void validasiTarifLapangan(){
         try{
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            String masuk=(sdf.format(spinJamMasuk.getValue()));
-            String keluar=(sdf.format(spinJamKeluar.getValue()));
+            SimpleDateFormat hr = new SimpleDateFormat("HH:mm");
+            String masuk=(hr.format(spinJamMasuk.getValue()));
+            String keluar=(hr.format(spinJamKeluar.getValue()));
             
             DateFormat df = new SimpleDateFormat("HH:mm");
             Date jamMasuk = df.parse(masuk);
             Date jamKeluar = df.parse(keluar);
-            Date jam6=(sdf.parse("06:00"));
-            Date jam15=(sdf.parse("15:00"));
-            Date jam18=(sdf.parse("18:00"));
-            Date jam24=(sdf.parse("24:00"));
+            Date jam6=(hr.parse("06:00"));
+            Date jam15=(hr.parse("15:00"));
+            Date jam18=(hr.parse("18:00"));
+            Date jam24=(hr.parse("24:00"));
+            
+            hargaMalam = 80000;
+            hargaSore = 25000;
+            jamMalam = 0;
+            jamSore = 0;
+            
             if(jamKeluar.before(jamMasuk)){
                 JOptionPane.showMessageDialog(null, "Jam tidak valid");
+                spinJamKeluar.setValue(spinJamMasuk.getValue());
             }else{
+                // jam malam 18:00 - 24:00
                 if(jamMasuk.compareTo(jam18) == 0 || jamMasuk.compareTo(jam18) == 1){
-                    System.out.println("Malam");
                     if(jamKeluar.compareTo(jam24) == -1 || jamKeluar.compareTo(jam24) == 0){
-                        long y = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
-                        System.out.println("selisih 18 " + (y));
+                        jamMalam = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                        hargaMalam += lapangan.getTarif();
+                        totalTarif = hargaMalam * jamMalam;
+                        totalJam = jamMalam;
                     }
+                    return;
                     
+                    // jam sore 15:00 - 18:00
                 }else if(jamMasuk.compareTo(jam15) == 0 || jamMasuk.compareTo(jam15) == 1){
-                    System.out.println("Sore");
                     if(jamKeluar.compareTo(jam18) == -1 || jamKeluar.compareTo(jam18) == 0){
-                        long y = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
-                        System.out.println("selisih 15 " + (y));
+                        jamSore = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                        hargaSore += lapangan.getTarif();
+                        totalTarif = hargaSore * jamSore;
+                        totalJam = jamSore;
                     }
                     else if(jamKeluar.compareTo(jam24) == -1 || jamKeluar.compareTo(jam24) == 0){
-                        long y = (jam18.getTime() - jamMasuk.getTime()) / (60*60*1000);
-                        long z = (jamKeluar.getTime() - jam18.getTime()) / (60*60*1000);
-                        System.out.println("selisih 15 " + (y));
-                        System.out.println("selisih 18 " + (z));
+                        jamSore = (jam18.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                        jamMalam = (jamKeluar.getTime() - jam18.getTime()) / (60*60*1000);
+                        hargaSore += lapangan.getTarif() * jamSore;
+                        hargaMalam += lapangan.getTarif() * jamMalam;
+                        totalTarif = hargaSore + hargaMalam;
+                        totalJam = jamSore + jamMalam ;
                     }
+                    return;
+                    
+                    // jam pagi 06:00 - 15:00
                 }if(jamMasuk.compareTo(jam6) == 0 || jamMasuk.compareTo(jam6) == 1){
-                    System.out.println("pagi");
                     if(jamKeluar.compareTo(jam15) == -1 || jamKeluar.compareTo(jam15) == 0){
                         long x = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
-                        System.out.println("selisih " + (x));
+                        totalJam = x;
+                        totalTarif = lapangan.getTarif() * x;
                     }
                     else if(jamKeluar.compareTo(jam18) == -1 || jamKeluar.compareTo(jam18) == 0){
                         long x = (jam15.getTime() - jamMasuk.getTime()) / (60*60*1000);
-                        long y = (jamKeluar.getTime() - jam15.getTime()) / (60*60*1000);
-                        System.out.println("selisih 6 " + (x));
-                        System.out.println("selisih 15 " + (y));
+                        jamSore = (jamKeluar.getTime() - jam15.getTime()) / (60*60*1000);
+                        totalJam = x + jamSore;
+                        x *= lapangan.getTarif();
+                        hargaSore += lapangan.getTarif() * jamSore;
+                        totalTarif = x + hargaSore;
+                        
                     }
                     else if(jamKeluar.compareTo(jam24) == -1 || jamKeluar.compareTo(jam24) == 0){
                         long x = (jam15.getTime() - jamMasuk.getTime()) / (60*60*1000);
-                        long y = (jam18.getTime() - jam15.getTime()) / (60*60*1000);
-                        long z = (jamKeluar.getTime() - jam18.getTime()) / (60*60*1000);
-                        System.out.println("selisih 6 " + (x));
-                        System.out.println("selisih 15 " + (y));
-                        System.out.println("selisih 18 " + (z));
+                        jamSore = (jam18.getTime() - jam15.getTime()) / (60*60*1000);
+                        jamMalam = (jamKeluar.getTime() - jam18.getTime()) / (60*60*1000);
+                        totalJam = x + jamSore + jamMalam;
+                        x *= lapangan.getTarif();
+                        hargaSore += lapangan.getTarif() * jamSore;
+                        hargaMalam += lapangan.getTarif() * jamMalam;
+                        totalTarif = x + hargaSore + hargaMalam;
                     }
                 }
+                
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        
+    }
+    
+    private double diskonMember(){
+        if(txtKodePelanggan.getText().isEmpty()){
+            diskon = 0;
+        }else{
+            List<Object[]> list = bCont.searchBooking(txtKodePelanggan.getText());
+            if(!list.isEmpty()){
+                diskon = totalTarif * (10.0/100);
+            }else{
+                diskon = 0;
+            }
+        }
+        txtDiskon.setText(String.valueOf(diskon));
+        return diskon;
+    }
+    
+    private void hitung(){
+        validasiTarifLapangan();
+        txtTarif.setText(String.valueOf(lapangan.getTarif()));
+        txtTarifSore.setText( String.valueOf(lapangan.getTarif() + 25000));
+        txtTarifSoreJam.setText(String.valueOf(jamSore));
+        txtTarifMalam.setText( String.valueOf(lapangan.getTarif() + 80000));
+        txtTarifMalamJam.setText(String.valueOf(jamMalam));
+        totalTarif = totalTarif - diskonMember();
+        txtTotalJam.setText(String.valueOf(totalJam));
+        txtTotalTarif.setText(String.valueOf(totalTarif));
     }
     
     private void comboBoxJenisLapangan(){
@@ -190,6 +277,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
             spin.setModel(sm);
             JSpinner.DateEditor de=new JSpinner.DateEditor(spin, "kk:00");
             spin.setEditor(de);
+            spin.setValue(date);
         }catch(Exception ex){}
     }
     
@@ -280,18 +368,33 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         cmbJenisLapangan = new javax.swing.JComboBox<>();
         jLabel16 = new javax.swing.JLabel();
         cmbKodeLapangan = new javax.swing.JComboBox<>();
-        txtLamaSewa = new javax.swing.JTextField();
+        txtTotalJam = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
-        txtLamaSewa1 = new javax.swing.JTextField();
+        txtTotalTarif = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        txtUangDP = new javax.swing.JTextField();
+        txtTarif = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        txtTarifSore = new javax.swing.JTextField();
+        jLabel24 = new javax.swing.JLabel();
+        txtTarifSoreJam = new javax.swing.JTextField();
+        jLabel25 = new javax.swing.JLabel();
+        txtTarifMalam = new javax.swing.JTextField();
+        jLabel26 = new javax.swing.JLabel();
+        txtTarifMalamJam = new javax.swing.JTextField();
+        txtUser = new javax.swing.JTextField();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        txtDiskon = new javax.swing.JTextField();
 
         DialogPelanggan.setTitle("Cari Pelanggan");
         DialogPelanggan.setAlwaysOnTop(true);
         DialogPelanggan.setBackground(new java.awt.Color(85, 239, 196));
         DialogPelanggan.setMinimumSize(new java.awt.Dimension(700, 460));
         DialogPelanggan.setModal(true);
-        DialogPelanggan.setPreferredSize(new java.awt.Dimension(700, 460));
         DialogPelanggan.getContentPane().setLayout(new java.awt.CardLayout());
 
         jPanel3.setBackground(new java.awt.Color(85, 239, 196));
@@ -496,6 +599,11 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
 
         spinJamKeluar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         spinJamKeluar.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, new java.util.Date(), java.util.Calendar.HOUR));
+        spinJamKeluar.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinJamKeluarStateChanged(evt);
+            }
+        });
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
@@ -525,18 +633,23 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         jLabel16.setText("Kode Lapangan");
 
         cmbKodeLapangan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbKodeLapangan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbKodeLapanganActionPerformed(evt);
+            }
+        });
 
-        txtLamaSewa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtLamaSewa.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTotalJam.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTotalJam.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtLamaSewaKeyPressed(evt);
+                txtTotalJamKeyPressed(evt);
             }
         });
 
         jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(255, 255, 255));
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel17.setText("Lama Sewa");
+        jLabel17.setText("Total Jam Sewa");
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel18.setForeground(new java.awt.Color(255, 255, 255));
@@ -546,12 +659,108 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         jLabel20.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel20.setForeground(new java.awt.Color(255, 255, 255));
         jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel20.setText("Jumlah DP");
+        jLabel20.setText("Total Tarif Sewa");
 
-        txtLamaSewa1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtLamaSewa1.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTotalTarif.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTotalTarif.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtLamaSewa1KeyPressed(evt);
+                txtTotalTarifKeyPressed(evt);
+            }
+        });
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel21.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel21.setText("Uang DP");
+
+        txtUangDP.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtUangDP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUangDPKeyPressed(evt);
+            }
+        });
+
+        txtTarif.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTarif.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTarifKeyPressed(evt);
+            }
+        });
+
+        jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel22.setText("Tarif Lapangan");
+
+        jLabel23.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel23.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel23.setText("Tarif Sore");
+
+        txtTarifSore.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTarifSore.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTarifSoreKeyPressed(evt);
+            }
+        });
+
+        jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel24.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel24.setText("Jam");
+
+        txtTarifSoreJam.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTarifSoreJam.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTarifSoreJamKeyPressed(evt);
+            }
+        });
+
+        jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel25.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel25.setText("Tarif Malam");
+
+        txtTarifMalam.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTarifMalam.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTarifMalamKeyPressed(evt);
+            }
+        });
+
+        jLabel26.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel26.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel26.setText("Jam");
+
+        txtTarifMalamJam.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTarifMalamJam.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTarifMalamJamKeyPressed(evt);
+            }
+        });
+
+        txtUser.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtUser.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUserKeyPressed(evt);
+            }
+        });
+
+        jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel27.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel27.setText("User");
+
+        jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel28.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel28.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel28.setText("Diskon 10%");
+
+        txtDiskon.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtDiskon.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDiskonKeyPressed(evt);
             }
         });
 
@@ -563,30 +772,35 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtKodeBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtKodePelanggan)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnCariPelanggan))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtNamaPelanggan))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtNoHandphone, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtKodeBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtKodePelanggan)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnCariPelanggan))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtNamaPelanggan))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtNoHandphone, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(54, 54, 54)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -609,15 +823,45 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
                                     .addComponent(cmbJenisLapangan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(cmbKodeLapangan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtLamaSewa, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtLamaSewa1)))
+                                .addComponent(txtTotalTarif))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtUangDP))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtTarifMalam)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtTarifMalamJam, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtTotalJam)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTarifSore)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTarifSoreJam, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel24))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTarif))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtDiskon)))
                         .addGap(0, 94, Short.MAX_VALUE))
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jSeparator1))
@@ -658,8 +902,6 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
                             .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel15)
@@ -670,20 +912,52 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
                                     .addComponent(cmbKodeLapangan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel17)
-                                    .addComponent(txtLamaSewa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel18))
+                                    .addComponent(jLabel22)
+                                    .addComponent(txtTarif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel20)
-                                    .addComponent(txtLamaSewa1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(jLabel23)
+                                    .addComponent(txtTarifSore, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel24)
+                                    .addComponent(txtTarifSoreJam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel25)
+                                    .addComponent(txtTarifMalam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel26)
+                                    .addComponent(txtTarifMalamJam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel17)
+                                    .addComponent(txtTotalJam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel18)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel27)
+                                    .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(spinJamMasuk)
                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(spinJamKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(115, 234, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel28)
+                    .addComponent(txtDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(txtTotalTarif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(txtUangDP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -735,25 +1009,22 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnKembaliActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-//        if(validasiJam() == true){
-//            JOptionPane.showMessageDialog(null, "Jam ini telah diboking");
-//        }
-    
-        validasiTarifLapangan();
+        simpan();
     }//GEN-LAST:event_btnSimpanActionPerformed
 
-    private void txtLamaSewaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLamaSewaKeyPressed
+    private void txtTotalJamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalJamKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtLamaSewaKeyPressed
+    }//GEN-LAST:event_txtTotalJamKeyPressed
 
     private void btnPilihPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPilihPelangganActionPerformed
         if(txtKodePelanggan1.getText().isEmpty()){
             DialogPelanggan.dispose();
         }else{
-            txtKodePelanggan.setText(txtKodePelanggan1.getText());
-            txtNamaPelanggan.setText(txtNamaPelanggan1.getText());
-            txtNoHandphone.setText(txtNoHP.getText());
-            txtAlamat.setText(txtAlamat1.getText());
+            pelanggan = pCont.findOnePelanggan(txtKodePelanggan1.getText());
+            txtKodePelanggan.setText(pelanggan.getKdPelanggan());
+            txtNamaPelanggan.setText(pelanggan.getNmPelanggan());
+            txtNoHandphone.setText(pelanggan.getNoHp());
+            txtAlamat.setText(pelanggan.getAlamat());
             DialogPelanggan.dispose();
         }
         
@@ -761,11 +1032,66 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
 
     private void cmbJenisLapanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbJenisLapanganActionPerformed
         comboBoxKodeLapangan();
+        cmbKodeLapanganActionPerformed(null);
     }//GEN-LAST:event_cmbJenisLapanganActionPerformed
 
-    private void txtLamaSewa1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLamaSewa1KeyPressed
+    private void txtTotalTarifKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalTarifKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtLamaSewa1KeyPressed
+    }//GEN-LAST:event_txtTotalTarifKeyPressed
+
+    private void cmbKodeLapanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbKodeLapanganActionPerformed
+        if(validasiJam2() == true){
+            JOptionPane.showMessageDialog(null, "Jam ini telah diboking dengan nomor " + vKodeBook);
+        }else{
+            lapangan = lCont.findOneLapangan(cmbKodeLapangan.getSelectedItem().toString());
+            hitung();
+//            validasiTarifLapangan();
+//            txtTarif.setText(String.valueOf(lapangan.getTarif()));
+//            txtTarifSore.setText( String.valueOf(lapangan.getTarif() + 25000));
+//            txtTarifSoreJam.setText(String.valueOf(jamSore));
+//            txtTarifMalam.setText( String.valueOf(lapangan.getTarif() + 80000));
+//            txtTarifMalamJam.setText(String.valueOf(jamMalam));
+//            totalTarif = totalTarif - diskonMember();
+//            txtTotalJam.setText(String.valueOf(totalJam));
+//            txtTotalTarif.setText(String.valueOf(totalTarif));
+        }
+    }//GEN-LAST:event_cmbKodeLapanganActionPerformed
+
+    private void txtUangDPKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUangDPKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUangDPKeyPressed
+
+    private void txtTarifKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarifKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTarifKeyPressed
+
+    private void txtTarifSoreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarifSoreKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTarifSoreKeyPressed
+
+    private void txtTarifSoreJamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarifSoreJamKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTarifSoreJamKeyPressed
+
+    private void txtTarifMalamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarifMalamKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTarifMalamKeyPressed
+
+    private void txtTarifMalamJamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarifMalamJamKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTarifMalamJamKeyPressed
+
+    private void spinJamKeluarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinJamKeluarStateChanged
+        cmbKodeLapanganActionPerformed(null);
+    }//GEN-LAST:event_spinJamKeluarStateChanged
+
+    private void txtUserKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUserKeyPressed
+
+    private void txtDiskonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDiskonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDiskonKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -789,6 +1115,14 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -810,15 +1144,101 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     private javax.swing.JTable tablePelanggan;
     private javax.swing.JTextArea txtAlamat;
     private javax.swing.JTextArea txtAlamat1;
+    private javax.swing.JTextField txtDiskon;
     private javax.swing.JTextField txtKodeBooking;
     private javax.swing.JTextField txtKodePelanggan;
     private javax.swing.JTextField txtKodePelanggan1;
-    private javax.swing.JTextField txtLamaSewa;
-    private javax.swing.JTextField txtLamaSewa1;
     private javax.swing.JTextField txtNamaPelanggan;
     private javax.swing.JTextField txtNamaPelanggan1;
     private javax.swing.JTextField txtNoHP;
     private javax.swing.JTextField txtNoHandphone;
+    private javax.swing.JTextField txtTarif;
+    private javax.swing.JTextField txtTarifMalam;
+    private javax.swing.JTextField txtTarifMalamJam;
+    private javax.swing.JTextField txtTarifSore;
+    private javax.swing.JTextField txtTarifSoreJam;
     private javax.swing.JTextField txtTglBooking;
+    private javax.swing.JTextField txtTotalJam;
+    private javax.swing.JTextField txtTotalTarif;
+    private javax.swing.JTextField txtUangDP;
+    private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
+
+    private void tidakAktif(){
+        txtKodeBooking.setEditable(false);
+        txtKodePelanggan.setEditable(false);
+        txtNamaPelanggan.setEditable(false);
+        txtNoHandphone.setEditable(false);
+        txtAlamat.setEditable(false);
+        txtUser.setEditable(false);
+        txtTglBooking.setEditable(false);
+        jdcTanggalPakai.setEnabled(false);
+        spinJamMasuk.setEnabled(false);
+        spinJamKeluar.setEnabled(false);
+        cmbJenisLapangan.setEnabled(false);
+        cmbKodeLapangan.setEnabled(false);
+        txtTarif.setEditable(false);
+        txtTarifMalam.setEditable(false);
+        txtTarifMalamJam.setEditable(false);
+        txtTarifSore.setEditable(false);
+        txtTarifSoreJam.setEditable(false);
+        txtTotalJam.setEditable(false);
+        txtDiskon.setEditable(false);
+        txtTotalTarif.setEditable(false);
+        btnSimpan.setEnabled(false);
+        btnCariPelanggan.setEnabled(false);
+        
+        //pelanggan dialog
+        txtKodePelanggan1.setEnabled(false);
+        txtNamaPelanggan1.setEnabled(false);
+        txtNoHP.setEnabled(false);
+        txtAlamat1.setEnabled(false);
+        
+    }
+    
+    private void aktif(){
+        btnSimpan.setEnabled(true);
+        btnCariPelanggan.setEnabled(true);
+        spinJamMasuk.setEnabled(true);
+        spinJamKeluar.setEnabled(true);
+        jdcTanggalPakai.setEnabled(true);
+        cmbJenisLapangan.setEnabled(true);
+        cmbKodeLapangan.setEnabled(true);
+    }
+    
+    private void simpan(){
+        if(txtKodePelanggan.getText().isEmpty() || txtTotalTarif.getText().isEmpty() || txtUangDP.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Data belum lengkap!");
+        }else if(validasiJam2() == true){
+            JOptionPane.showMessageDialog(null, "Jam ini telah diboking dengan nomor " + vKodeBook);
+        }else{
+            try {
+                SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+                String masuk = df.format(spinJamMasuk.getValue());
+                String keluar = df.format(spinJamKeluar.getValue());
+                booking = new Booking();
+                booking.setDiskon(Double.parseDouble(txtDiskon.getText()));
+                booking.setJamMasuk(df.parse(masuk));
+                booking.setJamKeluar(df.parse(keluar));
+                booking.setKdBooking(txtKodeBooking.getText());
+                booking.setKdLap(cmbKodeLapangan.getSelectedItem().toString());
+                booking.setKdPelanggan(txtKodePelanggan.getText());
+                booking.setKdUser(userLogin.getKdUser());
+                booking.setTglBooking(sdf.parse(txtTglBooking.getText()));
+                booking.setTglPakai(jdcTanggalPakai.getDate());
+                booking.setUangDp(Double.parseDouble(txtUangDP.getText()));
+                bCont.save(booking);
+                JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
+                
+                FormBooking fb = new FormBooking(userLogin);
+                JDesktopPane desktopPane = getDesktopPane();
+                desktopPane.add(fb);
+                fb.setVisible(true);
+                this.dispose();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+           
+        }
+    }
 }

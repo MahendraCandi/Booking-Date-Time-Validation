@@ -101,25 +101,13 @@ public class BookingController implements Serializable{
     }
     
     // validasi kode lap, tanggal, jam
-    public List<Object[]> findValidasiLapangan(String kdLap, Date tglPakai, Date jamMasuk, Date jamKeluar){
+    public List<Booking> findValidasiLapangan2(String kdLap, Date tglPakai){
         EntityManager em = getEntityManager();
-        List<Object[]> listBooking = new ArrayList<>();
+        List<Booking> listBooking = new ArrayList<>();
         try {
-            Query q = em.createNativeQuery("SELECT t1.kd_booking, t1.kd_lap, t1.tgl_pakai, t1.jam_masuk, t1.jam_keluar\n" +
-                "FROM\n" +
-                "(\n" +
-                "SELECT b.kd_booking, b.kd_lap, b.tgl_pakai, b.jam_masuk, b.jam_keluar\n" +
-                "FROM booking b\n" +
-                "WHERE b.tgl_pakai = ?tglPakai AND b.kd_lap = ?kdLap\n" +
-                ") t1\n" +
-                "WHERE\n" +
-                "(?jamMasuk > t1.jam_masuk AND ?jamMasuk < t1.jam_keluar)\n" +
-                "OR (?jamKeluar > t1.jam_masuk AND ?jamKeluar < t1.jam_keluar)\n" +
-                "OR (?jamMasuk = t1.jam_masuk AND ?jamKeluar = t1.jam_keluar)");
+            Query q = em.createQuery("SELECT b FROM Booking b WHERE b.tglPakai = :tglPakai AND b.kdLap = :kdLap");
             q.setParameter("kdLap", kdLap);
             q.setParameter("tglPakai", tglPakai);
-            q.setParameter("jamMasuk", jamMasuk);
-            q.setParameter("jamKeluar", jamKeluar);
             listBooking = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

@@ -252,12 +252,13 @@ public class FormBooking extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Pilih data yang mau dilihat!");
         }else{
             booking = bCont.findOneBooking(tableBooking.getValueAt(baris, 0).toString());
+            FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
+            JDesktopPane desktopPane = getDesktopPane();
+            desktopPane.add(fbt);
+            fbt.setVisible(true);
+            this.dispose();
         }
-        FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
-        JDesktopPane desktopPane = getDesktopPane();
-        desktopPane.add(fbt);
-        fbt.setVisible(true);
-        this.dispose();
+        
     }//GEN-LAST:event_btnDetailActionPerformed
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed

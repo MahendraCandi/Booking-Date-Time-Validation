@@ -4,6 +4,7 @@ import futsalproject.data.Penyewaan;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -64,16 +65,49 @@ public class PenyewaanController implements Serializable{
         }finally{}
     }
     
-    public List<Penyewaan> findAllPenyewaan(){
+    public List<Object[]> findAllPenyewaan(){
         EntityManager em = getEntityManager();
-        List<Penyewaan> listPenyewaan = new ArrayList<>();
+        List<Object[]> listPenyewaan = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT u FROM Penyewaan u");
+            Query q = em.createQuery("SELECT p, pel.nmPelanggan FROM Penyewaan p, Pelanggan pel WHERE p.kdPelanggan = pel.kdPelanggan");
             listPenyewaan = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return listPenyewaan;
+    }
+    
+    public List<Object[]> searchPenyewaan(String cari){
+        EntityManager em = getEntityManager();
+        List<Object[]> listBooking = new ArrayList<>();
+        try {
+            Query q = em.createNativeQuery("SELECT p.no_trans, p.tgl_sewa, p.kd_booking, p.kd_pelanggan, pel.nm_pelanggan, p.jam_sewa_masuk, p.jam_sewa_keluar, p.total_sewa, p.uang_byr FROM penyewaan p \n" +
+                "INNER JOIN pelanggan pel ON p.kd_pelanggan = pel.kd_pelanggan\n" +
+                "WHERE p.no_trans LIKE ?cari\n" +
+                "OR p.kd_booking LIKE ?cari\n" +
+                "OR p.kd_pelanggan LIKE ?cari\n" +
+                "OR pel.nm_pelanggan LIKE ?cari");
+            q.setParameter("cari", "%"+cari+"%");
+            listBooking = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listBooking;
+    }
+    
+    // cari member eksis untuk diskon, di form booking
+    public List<Penyewaan> searchMemberEksis(String kdPelanggan, Date tglSewa){
+        EntityManager em = getEntityManager();
+        List<Penyewaan> listBooking = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT p FROM Penyewaan p WHERE p.kdPelanggan = :kdPelanggan AND p.tglSewa < :tglSewa");
+            q.setParameter("kdPelanggan", kdPelanggan);
+            q.setParameter("tglSewa", tglSewa);
+            listBooking = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listBooking;
     }
     
     public String kodeOtomatis(){

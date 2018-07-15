@@ -1,9 +1,8 @@
 package futsalproject.form;
 
 import futsalproject.FutsalProject;
-import futsalproject.controller.BookingController;
-import futsalproject.data.Booking;
-import futsalproject.data.User;
+import futsalproject.controller.PenyewaanController;
+import futsalproject.data.Penyewaan;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -18,48 +17,58 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-public class FormBooking extends javax.swing.JInternalFrame {
+public class FormSewaDaftar extends javax.swing.JInternalFrame {
 
-    User userLogin = new User();
-    Booking booking = new Booking();
-    BookingController bCont = new BookingController(FutsalProject.emf);
+    Penyewaan penyewaan = new Penyewaan();
+    PenyewaanController sewaCont = new PenyewaanController(FutsalProject.emf);
     DefaultTableModel model;
     /**
-     * Creates new form FormBooking
+     * Creates new form FormSewaDaftar
      */
-    public FormBooking(User user) {
+    public FormSewaDaftar() {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
         model = new DefaultTableModel();
+        model.addColumn("No. Transaksi");
+        model.addColumn("Tgl. sewa");
         model.addColumn("Kode Booking");
-        model.addColumn("Tgl. Booking");
         model.addColumn("Kode Pelanggan");
         model.addColumn("Nama Pelanggan");
-        model.addColumn("Kode Lapangan");
-        model.addColumn("Tgl. Pakai");
         model.addColumn("Jam Masuk");
         model.addColumn("Jam Keluar");
-        tableBooking.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
+        model.addColumn("Total Sewa");
+        model.addColumn("Uang Bayar");
+        tableSewa.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
         showTable();
         renderTableTgl();
         renderTableJam();
-        userLogin = user;
     }
     
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<Object[]> list = bCont.findAllBooking();
-        for(Object[] obj : list){
+        List<Object[]> list = sewaCont.findAllPenyewaan();
+        for(Object[] o : list){
+            Object[] obj = new Object[9];
+            Penyewaan p = (Penyewaan) o[0];
+            obj[0] = p.getNoTrans();
+            obj[1] = p.getTglSewa();
+            obj[2] = p.getKdBooking();
+            obj[3] = p.getKdPelanggan();
+            obj[4] = o[1];
+            obj[5] = p.getJamSewaMasuk();
+            obj[6] = p.getJamSewaKeluar();
+            obj[7] = p.getTotalSewa();
+            obj[8] = p.getUangByr();
             model.addRow(obj);
         }
-        tableBooking.setModel(model);
+        tableSewa.setModel(model);
     }
     
     private void cariTable(String cari){
-        List<Object[]> listUser = bCont.searchBooking(cari);
-        if(listUser.size() == 0){
+        List<Object[]> listSewa = sewaCont.searchPenyewaan(cari);
+        if(listSewa.size() == 0){
             JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
         }else{
             if(cari.isEmpty()){
@@ -67,10 +76,10 @@ public class FormBooking extends javax.swing.JInternalFrame {
             }else{
                 model.getDataVector().removeAllElements();
                 model.fireTableDataChanged();
-                for(Object[] obj : listUser){
-                model.addRow(obj);
-            }
-            tableBooking.setModel(model);
+                for(Object[] obj : listSewa){
+                    model.addRow(obj);
+                }
+            tableSewa.setModel(model);
             }
         }
     }
@@ -87,10 +96,9 @@ public class FormBooking extends javax.swing.JInternalFrame {
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
         };
-        tableBooking.getColumnModel().getColumn(1).setCellRenderer(tbr);
-        tableBooking.getColumnModel().getColumn(5).setCellRenderer(tbr);
+        tableSewa.getColumnModel().getColumn(1).setCellRenderer(tbr);
     }
-    
+
     private void renderTableJam(){
         TableCellRenderer tbr = new DefaultTableCellRenderer(){
             SimpleDateFormat sdf=new SimpleDateFormat("kk:mm", Locale.forLanguageTag("in-ID"));
@@ -103,10 +111,9 @@ public class FormBooking extends javax.swing.JInternalFrame {
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
         };
-        tableBooking.getColumnModel().getColumn(6).setCellRenderer(tbr);
-        tableBooking.getColumnModel().getColumn(7).setCellRenderer(tbr);
+        tableSewa.getColumnModel().getColumn(5).setCellRenderer(tbr);
+        tableSewa.getColumnModel().getColumn(6).setCellRenderer(tbr);
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -125,7 +132,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
         txtCari = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableBooking = new javax.swing.JTable();
+        tableSewa = new javax.swing.JTable();
 
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
@@ -155,7 +162,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Form Booking");
+        jLabel5.setText("Form Daftar Sewa");
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
@@ -171,15 +178,15 @@ public class FormBooking extends javax.swing.JInternalFrame {
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("Cari");
 
-        tableBooking.setModel(new javax.swing.table.DefaultTableModel(
+        tableSewa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Kode Booking", "Tgl. Bookingr", "Kode Pelanggan", "Nama Pelanggan", "Kode Lapangan", "tgl. Pakai", "Jam Masuk", "Jam Keluar"
+                "Nomor Transaksi", "Tgl. Sewa", "Kode Booking", "Kode Pelanggan", "Nama Pelanggan", "Jam Masuk", "Jam Keluar", "Total Sewa", "Uang Bayar"
             }
         ));
-        jScrollPane1.setViewportView(tableBooking);
+        jScrollPane1.setViewportView(tableSewa);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -212,7 +219,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
                         .addComponent(jLabel6)
                         .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -230,35 +237,35 @@ public class FormBooking extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
+        penyewaan = null;
+        FormSewa fs = new FormSewa(penyewaan);
+        JDesktopPane desktopPane = getDesktopPane();
+        desktopPane.add(fs);
+        fs.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnTambahActionPerformed
+
+    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
+        int baris = tableSewa.getSelectedRow();
+        if(baris == -1){
+            JOptionPane.showMessageDialog(null, "Pilih data yang mau dilihat!");
+        }else{
+            penyewaan = sewaCont.findOnePenyewaan(tableSewa.getValueAt(baris, 0).toString());
+            FormSewa fs = new FormSewa(penyewaan);
+            JDesktopPane desktopPane = getDesktopPane();
+            desktopPane.add(fs);
+            fs.setVisible(true);
+            this.dispose();
+        }
+
+    }//GEN-LAST:event_btnDetailActionPerformed
+
     private void txtCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             cariTable(txtCari.getText());
         }
     }//GEN-LAST:event_txtCariKeyPressed
-
-    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
-        int baris = tableBooking.getSelectedRow();
-        if(baris == -1){
-            JOptionPane.showMessageDialog(null, "Pilih data yang mau dilihat!");
-        }else{
-            booking = bCont.findOneBooking(tableBooking.getValueAt(baris, 0).toString());
-            FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
-            JDesktopPane desktopPane = getDesktopPane();
-            desktopPane.add(fbt);
-            fbt.setVisible(true);
-            this.dispose();
-        }
-        
-    }//GEN-LAST:event_btnDetailActionPerformed
-
-    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-        booking = null;
-        FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
-        JDesktopPane desktopPane = getDesktopPane();
-        desktopPane.add(fbt);
-        fbt.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnTambahActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -270,7 +277,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable tableBooking;
+    private javax.swing.JTable tableSewa;
     private javax.swing.JTextField txtCari;
     // End of variables declaration//GEN-END:variables
 }

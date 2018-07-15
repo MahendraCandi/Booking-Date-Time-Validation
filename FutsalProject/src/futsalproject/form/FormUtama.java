@@ -185,6 +185,11 @@ public class FormUtama extends javax.swing.JFrame {
         MenuSewa.setBackground(new java.awt.Color(255, 255, 255));
         MenuSewa.setText("Penyewaan");
         MenuSewa.setOpaque(true);
+        MenuSewa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuSewaActionPerformed(evt);
+            }
+        });
         MenuTransaksi.add(MenuSewa);
 
         jMenuBar1.add(MenuTransaksi);
@@ -258,6 +263,11 @@ public class FormUtama extends javax.swing.JFrame {
         FormBooking fb = new FormBooking(userLogin);
         showForm(fb);
     }//GEN-LAST:event_MenuBookingActionPerformed
+
+    private void MenuSewaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSewaActionPerformed
+        FormSewaDaftar fs = new FormSewaDaftar();
+        showForm(fs);
+    }//GEN-LAST:event_MenuSewaActionPerformed
 
     /**
      * @param args the command line arguments

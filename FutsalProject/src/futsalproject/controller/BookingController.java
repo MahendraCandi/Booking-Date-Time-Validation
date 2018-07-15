@@ -69,7 +69,12 @@ public class BookingController implements Serializable{
         EntityManager em = getEntityManager();
         List<Object[]> listBooking = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT b, p.nmPelanggan FROM Booking b, Pelanggan p WHERE b.kdPelanggan = p.kdPelanggan");
+            Query q = em.createNativeQuery("SELECT b.kd_booking, b.tgl_booking, b.kd_pelanggan, p.nm_pelanggan, b.kd_pelanggan, b.tgl_pakai, b.jam_masuk, b.jam_keluar FROM booking b\n" +
+                "INNER JOIN pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n" +
+                "WHERE NOT EXISTS (\n" +
+                "    SELECT * FROM penyewaan p\n" +
+                "    WHERE b.kd_booking = p.kd_booking\n" +
+                ")");
             listBooking = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

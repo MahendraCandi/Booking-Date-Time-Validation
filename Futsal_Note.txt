@@ -22,3 +22,15 @@ Kode Lapangan	Object	true	true
 tgl. Pakai	Object	true	true
 Jam Masuk	Object	true	true
 Jam Keluar	Object	true	true
+
+SELECT * FROM `booking` WHERE `tgl_booking` < 2018-07-04
+
+Nomor Transaksi	Object	true	true
+Tgl. Sewa	Object	true	true
+Kode Booking	Object	true	true
+Kode Pelanggan	Object	true	true
+Nama Pelanggan	Object	true	true
+Jam Masuk	Object	true	true
+Jam Keluar	Object	true	true
+Total Sewa	Object	true	true
+Uang bayar

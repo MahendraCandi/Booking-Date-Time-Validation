@@ -9,23 +9,18 @@ import futsalproject.data.Booking;
 import futsalproject.data.Lapangan;
 import futsalproject.data.Pelanggan;
 import futsalproject.data.Penyewaan;
-import java.awt.Font;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 
 public class FormSewa extends javax.swing.JInternalFrame {
 
-    /**
-     * BUAT LAMA SEWA DISKON SEWA TOTAL SEWA
-     * AMBIL LOGIC DARI FORM BOKING TAMBAH
-     */
-    
-    
     Penyewaan penyewaan = new Penyewaan();
     Booking booking = new Booking();
     Pelanggan pelanggan = new Pelanggan();
@@ -34,7 +29,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
     PenyewaanController sewaCont = new PenyewaanController(FutsalProject.emf);
     PelangganController pCont = new PelangganController(FutsalProject.emf);
     LapanganController lCont = new LapanganController(FutsalProject.emf);
-    SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
+    SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"));
     DateFormat df = new SimpleDateFormat("HH:mm");
     
     double totalTarif, totalJam;
@@ -72,7 +67,9 @@ public class FormSewa extends javax.swing.JInternalFrame {
         txtDiskonSewa.setEnabled(false);
         txtTotalSewa.setEnabled(false);
         txtUangDp.setEnabled(false);
+        txtSisaSewa.setEnabled(false);
         txtUangBayar.setEnabled(false);
+        
     }
     
     private void validasiSewa(){
@@ -81,6 +78,17 @@ public class FormSewa extends javax.swing.JInternalFrame {
             txtNoTrans.setText(sewaCont.kodeOtomatis());
             txtTglSewa.setText(sdf.format(new Date()));
             cmbKodeBooking.setEnabled(true);
+        }else{
+            txtNoTrans.setText(penyewaan.getNoTrans());
+            txtTglSewa.setText(sdf.format(penyewaan.getTglSewa()));
+            dataBooking();
+            validasiTarifLapangan();
+
+            txtLamaSewa.setText(String.valueOf(totalJam));
+            txtTotalSewa.setText(String.valueOf(totalTarif - diskonMember()));
+            double dp = Double.parseDouble(txtUangDp.getText());
+            txtSisaSewa.setText(String.valueOf(totalTarif - dp));
+            txtUangBayar.setText(String.valueOf(penyewaan.getUangByr()));
         }
     }
     
@@ -95,12 +103,15 @@ public class FormSewa extends javax.swing.JInternalFrame {
         }else{
             Object[] obj = {penyewaan.getKdBooking()};
             cmbKodeBooking.setModel(new DefaultComboBoxModel(obj));
-            
         }
     }
     
     private void dataBooking(){
-        booking = bCont.findOneBooking(cmbKodeBooking.getSelectedItem().toString());
+        if(penyewaan == null){
+            booking = bCont.findOneBooking(cmbKodeBooking.getSelectedItem().toString());
+        }else{
+            booking = bCont.findOneBooking(penyewaan.getKdBooking());
+        }
         pelanggan = pCont.findOnePelanggan(booking.getKdPelanggan());
         lapangan = lCont.findOneLapangan(booking.getKdLap());
         txtTglBooking.setText(sdf.format(booking.getTglBooking()));
@@ -110,6 +121,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
         txtJenisLapangan.setText(lapangan.getJenisLap());
         txtJamMasuk.setText(df.format(booking.getJamMasuk()));
         txtJamKeluar.setText(df.format(booking.getJamKeluar()));
+        txtUangDp.setText(String.valueOf(booking.getUangDp()));
     }
     
     private void validasiTarifLapangan(){
@@ -127,7 +139,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
             hargaSore = 25000;
             jamMalam = 0;
             jamSore = 0;
-            
+                        
             // jam malam 18:00 - 24:00
             if(jamMasuk.compareTo(jam18) == 0 || jamMasuk.compareTo(jam18) == 1){
                 if(jamKeluar.compareTo(jam24) == -1 || jamKeluar.compareTo(jam24) == 0){
@@ -182,12 +194,63 @@ public class FormSewa extends javax.swing.JInternalFrame {
                     hargaMalam += lapangan.getTarif() * jamMalam;
                     totalTarif = x + hargaSore + hargaMalam;
                 }
-                txtLamaSewa.setText(String.valueOf(totalJam));
-                txtTotalSewa.setText(String.valueOf(totalTarif));
             }
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+    
+    private double diskonMember(){
+        if(txtKodePelanggan.getText().isEmpty()){
+            diskon = 0;
+        }else{
+            try {
+                List<Penyewaan> list = sewaCont.searchMemberEksis(txtKodePelanggan.getText(), sdf.parse(txtTglBooking.getText()));
+                if(!list.isEmpty()){
+                    diskon = totalTarif * (10.0/100);
+                }else{
+                    diskon = 0;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        txtDiskonSewa.setText(String.valueOf(diskon));
+        return diskon;
+    }
+    
+    private void simpan(){
+        if(txtUangBayar.getText().isEmpty() || txtTotalSewa.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Data belum lengkap!");
+        }else{
+            double harga = Double.parseDouble(txtSisaSewa.getText());
+            double ubay = Double.parseDouble(txtUangBayar.getText());
+            if(ubay < (harga)){
+                JOptionPane.showMessageDialog(null, "Uang bayar kurang!");
+            }else{
+                try {
+                    penyewaan = new Penyewaan();
+                    penyewaan.setDiskonSewa(Double.parseDouble(txtDiskonSewa.getText()));
+                    penyewaan.setJamSewaKeluar(df.parse(txtJamKeluar.getText()));
+                    penyewaan.setJamSewaMasuk(df.parse(txtJamMasuk.getText()));
+                    penyewaan.setKdBooking(cmbKodeBooking.getSelectedItem().toString());
+                    penyewaan.setKdLap(txtKodeLapangan.getText());
+                    penyewaan.setKdPelanggan(txtKodePelanggan.getText());
+                    penyewaan.setKdUser(booking.getKdUser());
+                    penyewaan.setLamaSewa(Double.parseDouble(txtLamaSewa.getText()));
+                    penyewaan.setNoTrans(txtNoTrans.getText());
+                    penyewaan.setTglSewa(sdf.parse(txtTglSewa.getText()));
+                    penyewaan.setTotalSewa(Double.parseDouble(txtTotalSewa.getText()));
+                    penyewaan.setUangByr(Double.parseDouble(txtUangBayar.getText()));
+                    sewaCont.save(penyewaan);
+                    JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
+                    btnKembaliActionPerformed(null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
     }
 
     /**
@@ -208,7 +271,6 @@ public class FormSewa extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel6 = new javax.swing.JLabel();
-        btnCari = new javax.swing.JButton();
         cmbKodeBooking = new javax.swing.JComboBox<>();
         txtTglBooking = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -236,6 +298,8 @@ public class FormSewa extends javax.swing.JInternalFrame {
         txtUangDp = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         txtUangBayar = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        txtSisaSewa = new javax.swing.JTextField();
 
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
@@ -280,8 +344,6 @@ public class FormSewa extends javax.swing.JInternalFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("Kode Booking");
-
-        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Search_20px.png"))); // NOI18N
 
         cmbKodeBooking.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cmbKodeBooking.addActionListener(new java.awt.event.ActionListener() {
@@ -381,6 +443,13 @@ public class FormSewa extends javax.swing.JInternalFrame {
 
         txtUangBayar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel17.setText("Sisa Sewa");
+
+        txtSisaSewa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -402,22 +471,15 @@ public class FormSewa extends javax.swing.JInternalFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(txtTglSewa, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(374, 374, 374)
-                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtUangBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cmbKodeBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(txtTglBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(txtTglBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cmbKodeBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -463,7 +525,15 @@ public class FormSewa extends javax.swing.JInternalFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(txtDiskonSewa, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(txtDiskonSewa, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtSisaSewa, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtUangBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 135, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -488,7 +558,6 @@ public class FormSewa extends javax.swing.JInternalFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel6)
-                                    .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(cmbKodeBooking, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -536,9 +605,13 @@ public class FormSewa extends javax.swing.JInternalFrame {
                             .addComponent(txtJenisLapangan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSisaSewa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtUangBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16))
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addContainerGap(190, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -556,22 +629,30 @@ public class FormSewa extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnKembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKembaliActionPerformed
-        //        aktif();
-        //        bersih();
+        FormSewaDaftar fsd = new FormSewaDaftar();
+        JDesktopPane jd = getDesktopPane();
+        jd.add(fsd);
+        fsd.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnKembaliActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-        //        simpan();
+        simpan();
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void cmbKodeBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbKodeBookingActionPerformed
         dataBooking();
         validasiSewa();
+        validasiTarifLapangan();
+        
+        txtLamaSewa.setText(String.valueOf(totalJam));
+        txtTotalSewa.setText(String.valueOf(totalTarif - diskonMember()));
+        double dp = Double.parseDouble(txtUangDp.getText());
+        txtSisaSewa.setText(String.valueOf(totalTarif - dp));
     }//GEN-LAST:event_cmbKodeBookingActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCari;
     private javax.swing.JButton btnKembali;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JComboBox<String> cmbKodeBooking;
@@ -583,6 +664,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -603,6 +685,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtLamaSewa;
     private javax.swing.JTextField txtNamaPelanggan;
     private javax.swing.JTextField txtNoTrans;
+    private javax.swing.JTextField txtSisaSewa;
     private javax.swing.JTextField txtTglBooking;
     private javax.swing.JTextField txtTglSewa;
     private javax.swing.JTextField txtTotalSewa;

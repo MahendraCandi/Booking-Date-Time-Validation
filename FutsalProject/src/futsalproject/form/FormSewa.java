@@ -1,4 +1,4 @@
-package futsalproject.form;
+ package futsalproject.form;
 
 import futsalproject.FutsalProject;
 import futsalproject.controller.BookingController;
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 public class FormSewa extends javax.swing.JInternalFrame {
 
@@ -35,6 +36,13 @@ public class FormSewa extends javax.swing.JInternalFrame {
     LapanganController lCont = new LapanganController(FutsalProject.emf);
     SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
     DateFormat df = new SimpleDateFormat("HH:mm");
+    
+    double totalTarif, totalJam;
+    long hargaMalam;
+    long hargaSore;
+    long jamMalam;
+    long jamSore;
+    double diskon;
     /**
      * Creates new form FormSewa
      */
@@ -46,6 +54,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
         tidakAktif();
         comboBoking();
         validasiSewa();
+        
     }
     
     private void tidakAktif(){
@@ -55,6 +64,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
         txtTglSewa.setEnabled(false);
         txtKodeLapangan.setEnabled(false);
         txtKodePelanggan.setEnabled(false);
+        txtNamaPelanggan.setEnabled(false);
         txtJenisLapangan.setEnabled(false);
         txtJamMasuk.setEnabled(false);
         txtJamKeluar.setEnabled(false);
@@ -70,6 +80,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
             txtUangBayar.setEnabled(true);
             txtNoTrans.setText(sewaCont.kodeOtomatis());
             txtTglSewa.setText(sdf.format(new Date()));
+            cmbKodeBooking.setEnabled(true);
         }
     }
     
@@ -84,6 +95,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
         }else{
             Object[] obj = {penyewaan.getKdBooking()};
             cmbKodeBooking.setModel(new DefaultComboBoxModel(obj));
+            
         }
     }
     
@@ -98,6 +110,84 @@ public class FormSewa extends javax.swing.JInternalFrame {
         txtJenisLapangan.setText(lapangan.getJenisLap());
         txtJamMasuk.setText(df.format(booking.getJamMasuk()));
         txtJamKeluar.setText(df.format(booking.getJamKeluar()));
+    }
+    
+    private void validasiTarifLapangan(){
+        try{
+            SimpleDateFormat hr = new SimpleDateFormat("HH:mm");
+            DateFormat df = new SimpleDateFormat("HH:mm");
+            Date jamMasuk = df.parse(txtJamMasuk.getText());
+            Date jamKeluar = df.parse(txtJamKeluar.getText());
+            Date jam6=(hr.parse("06:00"));
+            Date jam15=(hr.parse("15:00"));
+            Date jam18=(hr.parse("18:00"));
+            Date jam24=(hr.parse("24:00"));
+            
+            hargaMalam = 80000;
+            hargaSore = 25000;
+            jamMalam = 0;
+            jamSore = 0;
+            
+            // jam malam 18:00 - 24:00
+            if(jamMasuk.compareTo(jam18) == 0 || jamMasuk.compareTo(jam18) == 1){
+                if(jamKeluar.compareTo(jam24) == -1 || jamKeluar.compareTo(jam24) == 0){
+                    jamMalam = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                    hargaMalam += lapangan.getTarif();
+                    totalTarif = hargaMalam * jamMalam;
+                    totalJam = jamMalam;
+                }
+                return;
+
+                // jam sore 15:00 - 18:00
+            }else if(jamMasuk.compareTo(jam15) == 0 || jamMasuk.compareTo(jam15) == 1){
+                if(jamKeluar.compareTo(jam18) == -1 || jamKeluar.compareTo(jam18) == 0){
+                    jamSore = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                    hargaSore += lapangan.getTarif();
+                    totalTarif = hargaSore * jamSore;
+                    totalJam = jamSore;
+                }
+                else if(jamKeluar.compareTo(jam24) == -1 || jamKeluar.compareTo(jam24) == 0){
+                    jamSore = (jam18.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                    jamMalam = (jamKeluar.getTime() - jam18.getTime()) / (60*60*1000);
+                    hargaSore += lapangan.getTarif() * jamSore;
+                    hargaMalam += lapangan.getTarif() * jamMalam;
+                    totalTarif = hargaSore + hargaMalam;
+                    totalJam = jamSore + jamMalam ;
+                }
+                return;
+
+                // jam pagi 06:00 - 15:00
+            }if(jamMasuk.compareTo(jam6) == 0 || jamMasuk.compareTo(jam6) == 1){
+                if(jamKeluar.compareTo(jam15) == -1 || jamKeluar.compareTo(jam15) == 0){
+                    long x = (jamKeluar.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                    totalJam = x;
+                    totalTarif = lapangan.getTarif() * x;
+                }
+                else if(jamKeluar.compareTo(jam18) == -1 || jamKeluar.compareTo(jam18) == 0){
+                    long x = (jam15.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                    jamSore = (jamKeluar.getTime() - jam15.getTime()) / (60*60*1000);
+                    totalJam = x + jamSore;
+                    x *= lapangan.getTarif();
+                    hargaSore += lapangan.getTarif() * jamSore;
+                    totalTarif = x + hargaSore;
+
+                }
+                else if(jamKeluar.compareTo(jam24) == -1 || jamKeluar.compareTo(jam24) == 0){
+                    long x = (jam15.getTime() - jamMasuk.getTime()) / (60*60*1000);
+                    jamSore = (jam18.getTime() - jam15.getTime()) / (60*60*1000);
+                    jamMalam = (jamKeluar.getTime() - jam18.getTime()) / (60*60*1000);
+                    totalJam = x + jamSore + jamMalam;
+                    x *= lapangan.getTarif();
+                    hargaSore += lapangan.getTarif() * jamSore;
+                    hargaMalam += lapangan.getTarif() * jamMalam;
+                    totalTarif = x + hargaSore + hargaMalam;
+                }
+                txtLamaSewa.setText(String.valueOf(totalJam));
+                txtTotalSewa.setText(String.valueOf(totalTarif));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -194,6 +284,11 @@ public class FormSewa extends javax.swing.JInternalFrame {
         btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Search_20px.png"))); // NOI18N
 
         cmbKodeBooking.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbKodeBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbKodeBookingActionPerformed(evt);
+            }
+        });
 
         txtTglBooking.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
@@ -468,6 +563,11 @@ public class FormSewa extends javax.swing.JInternalFrame {
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         //        simpan();
     }//GEN-LAST:event_btnSimpanActionPerformed
+
+    private void cmbKodeBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbKodeBookingActionPerformed
+        dataBooking();
+        validasiSewa();
+    }//GEN-LAST:event_cmbKodeBookingActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -20,25 +20,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 0085
+ * @author Candi-PC
  */
 @Entity
 @Table(name = "penyewaan")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Penyewaan.findAll", query = "SELECT p FROM Penyewaan p")
-    , @NamedQuery(name = "Penyewaan.findByNoTrans", query = "SELECT p FROM Penyewaan p WHERE p.noTrans = :noTrans")
-    , @NamedQuery(name = "Penyewaan.findByTglSewa", query = "SELECT p FROM Penyewaan p WHERE p.tglSewa = :tglSewa")
-    , @NamedQuery(name = "Penyewaan.findByKdPelanggan", query = "SELECT p FROM Penyewaan p WHERE p.kdPelanggan = :kdPelanggan")
-    , @NamedQuery(name = "Penyewaan.findByKdBooking", query = "SELECT p FROM Penyewaan p WHERE p.kdBooking = :kdBooking")
-    , @NamedQuery(name = "Penyewaan.findByKdLap", query = "SELECT p FROM Penyewaan p WHERE p.kdLap = :kdLap")
-    , @NamedQuery(name = "Penyewaan.findByJamSewaMasuk", query = "SELECT p FROM Penyewaan p WHERE p.jamSewaMasuk = :jamSewaMasuk")
-    , @NamedQuery(name = "Penyewaan.findByJamSewaKeluar", query = "SELECT p FROM Penyewaan p WHERE p.jamSewaKeluar = :jamSewaKeluar")
-    , @NamedQuery(name = "Penyewaan.findByLamaSewa", query = "SELECT p FROM Penyewaan p WHERE p.lamaSewa = :lamaSewa")
-    , @NamedQuery(name = "Penyewaan.findByDiskonSewa", query = "SELECT p FROM Penyewaan p WHERE p.diskonSewa = :diskonSewa")
-    , @NamedQuery(name = "Penyewaan.findByTotalSewa", query = "SELECT p FROM Penyewaan p WHERE p.totalSewa = :totalSewa")
-    , @NamedQuery(name = "Penyewaan.findByUangByr", query = "SELECT p FROM Penyewaan p WHERE p.uangByr = :uangByr")
-    , @NamedQuery(name = "Penyewaan.findByKdUser", query = "SELECT p FROM Penyewaan p WHERE p.kdUser = :kdUser")})
+    @NamedQuery(name = "Penyewaan.findAll", query = "SELECT p FROM Penyewaan p"),
+    @NamedQuery(name = "Penyewaan.findByNoTrans", query = "SELECT p FROM Penyewaan p WHERE p.noTrans = :noTrans"),
+    @NamedQuery(name = "Penyewaan.findByTglSewa", query = "SELECT p FROM Penyewaan p WHERE p.tglSewa = :tglSewa"),
+    @NamedQuery(name = "Penyewaan.findByKdPelanggan", query = "SELECT p FROM Penyewaan p WHERE p.kdPelanggan = :kdPelanggan"),
+    @NamedQuery(name = "Penyewaan.findByKdBooking", query = "SELECT p FROM Penyewaan p WHERE p.kdBooking = :kdBooking"),
+    @NamedQuery(name = "Penyewaan.findByKdLap", query = "SELECT p FROM Penyewaan p WHERE p.kdLap = :kdLap"),
+    @NamedQuery(name = "Penyewaan.findByJamSewaMasuk", query = "SELECT p FROM Penyewaan p WHERE p.jamSewaMasuk = :jamSewaMasuk"),
+    @NamedQuery(name = "Penyewaan.findByJamSewaKeluar", query = "SELECT p FROM Penyewaan p WHERE p.jamSewaKeluar = :jamSewaKeluar"),
+    @NamedQuery(name = "Penyewaan.findByLamaSewa", query = "SELECT p FROM Penyewaan p WHERE p.lamaSewa = :lamaSewa"),
+    @NamedQuery(name = "Penyewaan.findByHariLibur", query = "SELECT p FROM Penyewaan p WHERE p.hariLibur = :hariLibur"),
+    @NamedQuery(name = "Penyewaan.findByDiskonSewa", query = "SELECT p FROM Penyewaan p WHERE p.diskonSewa = :diskonSewa"),
+    @NamedQuery(name = "Penyewaan.findByTotalSewa", query = "SELECT p FROM Penyewaan p WHERE p.totalSewa = :totalSewa"),
+    @NamedQuery(name = "Penyewaan.findByUangByr", query = "SELECT p FROM Penyewaan p WHERE p.uangByr = :uangByr"),
+    @NamedQuery(name = "Penyewaan.findByKdUser", query = "SELECT p FROM Penyewaan p WHERE p.kdUser = :kdUser")})
 public class Penyewaan implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -71,6 +72,9 @@ public class Penyewaan implements Serializable {
     @Column(name = "lama_sewa")
     private double lamaSewa;
     @Basic(optional = false)
+    @Column(name = "hari_libur")
+    private double hariLibur;
+    @Basic(optional = false)
     @Column(name = "diskon_sewa")
     private double diskonSewa;
     @Basic(optional = false)
@@ -90,7 +94,7 @@ public class Penyewaan implements Serializable {
         this.noTrans = noTrans;
     }
 
-    public Penyewaan(String noTrans, Date tglSewa, String kdPelanggan, String kdBooking, String kdLap, Date jamSewaMasuk, Date jamSewaKeluar, double lamaSewa, double diskonSewa, double totalSewa, double uangByr, String kdUser) {
+    public Penyewaan(String noTrans, Date tglSewa, String kdPelanggan, String kdBooking, String kdLap, Date jamSewaMasuk, Date jamSewaKeluar, double lamaSewa, double hariLibur, double diskonSewa, double totalSewa, double uangByr, String kdUser) {
         this.noTrans = noTrans;
         this.tglSewa = tglSewa;
         this.kdPelanggan = kdPelanggan;
@@ -99,6 +103,7 @@ public class Penyewaan implements Serializable {
         this.jamSewaMasuk = jamSewaMasuk;
         this.jamSewaKeluar = jamSewaKeluar;
         this.lamaSewa = lamaSewa;
+        this.hariLibur = hariLibur;
         this.diskonSewa = diskonSewa;
         this.totalSewa = totalSewa;
         this.uangByr = uangByr;
@@ -167,6 +172,14 @@ public class Penyewaan implements Serializable {
 
     public void setLamaSewa(double lamaSewa) {
         this.lamaSewa = lamaSewa;
+    }
+
+    public double getHariLibur() {
+        return hariLibur;
+    }
+
+    public void setHariLibur(double hariLibur) {
+        this.hariLibur = hariLibur;
     }
 
     public double getDiskonSewa() {

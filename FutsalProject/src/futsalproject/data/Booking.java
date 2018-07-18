@@ -20,23 +20,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 0085
+ * @author Candi-PC
  */
 @Entity
 @Table(name = "booking")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Booking.findAll", query = "SELECT b FROM Booking b")
-    , @NamedQuery(name = "Booking.findByKdBooking", query = "SELECT b FROM Booking b WHERE b.kdBooking = :kdBooking")
-    , @NamedQuery(name = "Booking.findByTglBooking", query = "SELECT b FROM Booking b WHERE b.tglBooking = :tglBooking")
-    , @NamedQuery(name = "Booking.findByKdPelanggan", query = "SELECT b FROM Booking b WHERE b.kdPelanggan = :kdPelanggan")
-    , @NamedQuery(name = "Booking.findByTglPakai", query = "SELECT b FROM Booking b WHERE b.tglPakai = :tglPakai")
-    , @NamedQuery(name = "Booking.findByJamMasuk", query = "SELECT b FROM Booking b WHERE b.jamMasuk = :jamMasuk")
-    , @NamedQuery(name = "Booking.findByJamKeluar", query = "SELECT b FROM Booking b WHERE b.jamKeluar = :jamKeluar")
-    , @NamedQuery(name = "Booking.findByDiskon", query = "SELECT b FROM Booking b WHERE b.diskon = :diskon")
-    , @NamedQuery(name = "Booking.findByKdLap", query = "SELECT b FROM Booking b WHERE b.kdLap = :kdLap")
-    , @NamedQuery(name = "Booking.findByUangDp", query = "SELECT b FROM Booking b WHERE b.uangDp = :uangDp")
-    , @NamedQuery(name = "Booking.findByKdUser", query = "SELECT b FROM Booking b WHERE b.kdUser = :kdUser")})
+    @NamedQuery(name = "Booking.findAll", query = "SELECT b FROM Booking b"),
+    @NamedQuery(name = "Booking.findByKdBooking", query = "SELECT b FROM Booking b WHERE b.kdBooking = :kdBooking"),
+    @NamedQuery(name = "Booking.findByTglBooking", query = "SELECT b FROM Booking b WHERE b.tglBooking = :tglBooking"),
+    @NamedQuery(name = "Booking.findByKdPelanggan", query = "SELECT b FROM Booking b WHERE b.kdPelanggan = :kdPelanggan"),
+    @NamedQuery(name = "Booking.findByTglPakai", query = "SELECT b FROM Booking b WHERE b.tglPakai = :tglPakai"),
+    @NamedQuery(name = "Booking.findByJamMasuk", query = "SELECT b FROM Booking b WHERE b.jamMasuk = :jamMasuk"),
+    @NamedQuery(name = "Booking.findByJamKeluar", query = "SELECT b FROM Booking b WHERE b.jamKeluar = :jamKeluar"),
+    @NamedQuery(name = "Booking.findByDiskon", query = "SELECT b FROM Booking b WHERE b.diskon = :diskon"),
+    @NamedQuery(name = "Booking.findByHariLibur", query = "SELECT b FROM Booking b WHERE b.hariLibur = :hariLibur"),
+    @NamedQuery(name = "Booking.findByKdLap", query = "SELECT b FROM Booking b WHERE b.kdLap = :kdLap"),
+    @NamedQuery(name = "Booking.findByUangDp", query = "SELECT b FROM Booking b WHERE b.uangDp = :uangDp"),
+    @NamedQuery(name = "Booking.findByKdUser", query = "SELECT b FROM Booking b WHERE b.kdUser = :kdUser")})
 public class Booking implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,6 +68,9 @@ public class Booking implements Serializable {
     @Column(name = "diskon")
     private double diskon;
     @Basic(optional = false)
+    @Column(name = "hari_libur")
+    private double hariLibur;
+    @Basic(optional = false)
     @Column(name = "kd_lap")
     private String kdLap;
     @Basic(optional = false)
@@ -83,7 +87,7 @@ public class Booking implements Serializable {
         this.kdBooking = kdBooking;
     }
 
-    public Booking(String kdBooking, Date tglBooking, String kdPelanggan, Date tglPakai, Date jamMasuk, Date jamKeluar, double diskon, String kdLap, double uangDp, String kdUser) {
+    public Booking(String kdBooking, Date tglBooking, String kdPelanggan, Date tglPakai, Date jamMasuk, Date jamKeluar, double diskon, double hariLibur, String kdLap, double uangDp, String kdUser) {
         this.kdBooking = kdBooking;
         this.tglBooking = tglBooking;
         this.kdPelanggan = kdPelanggan;
@@ -91,6 +95,7 @@ public class Booking implements Serializable {
         this.jamMasuk = jamMasuk;
         this.jamKeluar = jamKeluar;
         this.diskon = diskon;
+        this.hariLibur = hariLibur;
         this.kdLap = kdLap;
         this.uangDp = uangDp;
         this.kdUser = kdUser;
@@ -150,6 +155,14 @@ public class Booking implements Serializable {
 
     public void setDiskon(double diskon) {
         this.diskon = diskon;
+    }
+
+    public double getHariLibur() {
+        return hariLibur;
+    }
+
+    public void setHariLibur(double hariLibur) {
+        this.hariLibur = hariLibur;
     }
 
     public String getKdLap() {

@@ -2,14 +2,14 @@ package futsalproject.form;
 
 import futsalproject.FutsalProject;
 import futsalproject.controller.BookingController;
-import futsalproject.controller.LapanganController;
-import futsalproject.controller.PelangganController;
+import futsalproject.controller.DataLapanganController;
+import futsalproject.controller.DataPelangganController;
 import futsalproject.controller.PenyewaanController;
 import futsalproject.data.Booking;
-import futsalproject.data.Lapangan;
-import futsalproject.data.Pelanggan;
+import futsalproject.data.DataLapangan;
+import futsalproject.data.DataPelanggan;
 import futsalproject.data.Penyewaan;
-import futsalproject.data.User;
+import futsalproject.data.DataUser;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
@@ -33,13 +33,13 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     // TAMPIL BOOKING DETAIL DENGAN CHECK HARI LIBUR
     
     Booking booking = new Booking();
-    User userLogin = new User();
-    Pelanggan pelanggan = new Pelanggan();
-    Lapangan lapangan = new Lapangan();
+    DataUser userLogin = new DataUser();
+    DataPelanggan pelanggan = new DataPelanggan();
+    DataLapangan lapangan = new DataLapangan();
     Penyewaan penyewaan = new Penyewaan();
     BookingController bCont = new BookingController(FutsalProject.emf);
-    PelangganController pCont = new PelangganController(FutsalProject.emf);
-    LapanganController lCont = new LapanganController(FutsalProject.emf);
+    DataPelangganController pCont = new DataPelangganController(FutsalProject.emf);
+    DataLapanganController lCont = new DataLapanganController(FutsalProject.emf);
     PenyewaanController sewaController = new PenyewaanController(FutsalProject.emf);
     DefaultTableModel model;
     
@@ -54,7 +54,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     /**
      * Creates new form FormBookingTambah
      */
-    public FormBookingTambah(User user, Booking booking) {
+    public FormBookingTambah(DataUser user, Booking booking) {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
@@ -89,8 +89,8 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
             comboBoxKodeLapangan();
             aktif();
         }else{
-            pelanggan = pCont.findOnePelanggan(booking.getKdPelanggan());
-            lapangan = lCont.findOneLapangan(booking.getKdLap());
+            pelanggan = pCont.findOneDataPelanggan(booking.getKdPelanggan());
+            lapangan = lCont.findOneDataLapangan(booking.getKdLap());
             jamSpinner(spinJamMasuk);
             jamSpinner(spinJamKeluar);
             comboBoxJenisLapangan();
@@ -281,9 +281,9 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     }
     
     private void comboBoxKodeLapangan(){
-        List<Lapangan> listLapangan = lCont.searchLapangan(cmbJenisLapangan.getSelectedItem().toString());
+        List<DataLapangan> listLapangan = lCont.searchDataLapangan(cmbJenisLapangan.getSelectedItem().toString());
         List<String> listKdLapangan = new ArrayList<>();
-        for(Lapangan l : listLapangan){
+        for(DataLapangan l : listLapangan){
             listKdLapangan.add(l.getKdLap());
         }
         cmbKodeLapangan.setModel(new DefaultComboBoxModel(listKdLapangan.toArray()));
@@ -304,8 +304,8 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<Pelanggan> list = pCont.findAllPelanggan();
-        for(Pelanggan p : list){
+        List<DataPelanggan> list = pCont.findAllDataPelanggan();
+        for(DataPelanggan p : list){
             Object[] obj = new Object[4];
             obj[0] = p.getKdPelanggan();
             obj[1] = p.getNmPelanggan();
@@ -1111,7 +1111,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         if(txtKodePelanggan1.getText().isEmpty()){
             DialogPelanggan.dispose();
         }else{
-            pelanggan = pCont.findOnePelanggan(txtKodePelanggan1.getText());
+            pelanggan = pCont.findOneDataPelanggan(txtKodePelanggan1.getText());
             txtKodePelanggan.setText(pelanggan.getKdPelanggan());
             txtNamaPelanggan.setText(pelanggan.getNmPelanggan());
             txtNoHandphone.setText(pelanggan.getNoHp());
@@ -1134,7 +1134,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         if(validasiJam2() == true){
             JOptionPane.showMessageDialog(null, "Jam ini telah diboking dengan nomor " + vKodeBook);
         }else{
-            lapangan = lCont.findOneLapangan(cmbKodeLapangan.getSelectedItem().toString());
+            lapangan = lCont.findOneDataLapangan(cmbKodeLapangan.getSelectedItem().toString());
             hitung();
 //            validasiTarifLapangan();
 //            txtTarif.setText(String.valueOf(lapangan.getTarif()));

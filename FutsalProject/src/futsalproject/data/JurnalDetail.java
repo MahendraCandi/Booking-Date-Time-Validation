@@ -19,18 +19,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 0085
+ * @author Candi-PC
  */
 @Entity
 @Table(name = "jurnal_detail")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "JurnalDetail.findAll", query = "SELECT j FROM JurnalDetail j")
-    , @NamedQuery(name = "JurnalDetail.findById", query = "SELECT j FROM JurnalDetail j WHERE j.id = :id")
-    , @NamedQuery(name = "JurnalDetail.findByNoJurnal", query = "SELECT j FROM JurnalDetail j WHERE j.noJurnal = :noJurnal")
-    , @NamedQuery(name = "JurnalDetail.findByKdAkun", query = "SELECT j FROM JurnalDetail j WHERE j.kdAkun = :kdAkun")
-    , @NamedQuery(name = "JurnalDetail.findByDebet", query = "SELECT j FROM JurnalDetail j WHERE j.debet = :debet")
-    , @NamedQuery(name = "JurnalDetail.findByKredit", query = "SELECT j FROM JurnalDetail j WHERE j.kredit = :kredit")})
+    @NamedQuery(name = "JurnalDetail.findAll", query = "SELECT j FROM JurnalDetail j"),
+    @NamedQuery(name = "JurnalDetail.findById", query = "SELECT j FROM JurnalDetail j WHERE j.id = :id"),
+    @NamedQuery(name = "JurnalDetail.findByNoJurnal", query = "SELECT j FROM JurnalDetail j WHERE j.noJurnal = :noJurnal"),
+    @NamedQuery(name = "JurnalDetail.findByKdAkun", query = "SELECT j FROM JurnalDetail j WHERE j.kdAkun = :kdAkun"),
+    @NamedQuery(name = "JurnalDetail.findByDebet", query = "SELECT j FROM JurnalDetail j WHERE j.debet = :debet"),
+    @NamedQuery(name = "JurnalDetail.findByKredit", query = "SELECT j FROM JurnalDetail j WHERE j.kredit = :kredit")})
 public class JurnalDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;

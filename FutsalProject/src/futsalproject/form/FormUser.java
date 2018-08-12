@@ -2,7 +2,7 @@ package futsalproject.form;
 
 import futsalproject.FutsalProject;
 import futsalproject.controller.UserController;
-import futsalproject.data.User;
+import futsalproject.data.DataUser;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 public class FormUser extends javax.swing.JInternalFrame {
 
     UserController uCont = new UserController(FutsalProject.emf);
-    User user = new User();
+    DataUser user = new DataUser();
     DefaultTableModel model;
     /**
      * Creates new form FormUser
@@ -35,8 +35,8 @@ public class FormUser extends javax.swing.JInternalFrame {
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<User> list = uCont.findAllUser();
-        for(User u : list){
+        List<DataUser> list = uCont.findAllDataUser();
+        for(DataUser u : list){
             Object[] obj = new Object[4];
             obj[0] = u.getKdUser();
             obj[1] = u.getNmUser();
@@ -48,8 +48,8 @@ public class FormUser extends javax.swing.JInternalFrame {
     }
     
     private void cariTable(String cari){
-        List<User> listUser = uCont.searchUser(cari);
-        if(listUser.size() == 0){
+        List<DataUser> listDataUser = uCont.searchDataUser(cari);
+        if(listDataUser.size() == 0){
             JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
         }else{
             if(cari.isEmpty()){
@@ -57,7 +57,7 @@ public class FormUser extends javax.swing.JInternalFrame {
             }else{
                 model.getDataVector().removeAllElements();
                 model.fireTableDataChanged();
-                for(User u : listUser){
+                for(DataUser u : listDataUser){
                 Object[] obj = new Object[4];
                 obj[0] = u.getKdUser();
                 obj[1] = u.getNmUser();
@@ -183,7 +183,7 @@ public class FormUser extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Form User");
+        jLabel5.setText("Form Data User");
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
@@ -376,8 +376,8 @@ public class FormUser extends javax.swing.JInternalFrame {
         if(txtNama.getText().equalsIgnoreCase("") || txtPassword.getText().equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(null, "Data tidak valid!");
         }else{
-            user=uCont.findOneUser(txtKodeUser.getText());
-            User us=new User();
+            user=uCont.findOneDataUser(txtKodeUser.getText());
+            DataUser us=new DataUser();
             if(user==null){
                 us.setKdUser(txtKodeUser.getText());
                 us.setNmUser(txtNama.getText());
@@ -411,7 +411,7 @@ public class FormUser extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Pilih data yang mau dihapus!");
         }else{
         try{
-            User userPK = uCont.findOneUser(txtKodeUser.getText());
+            DataUser userPK = uCont.findOneDataUser(txtKodeUser.getText());
             uCont.delete(userPK.getKdUser());
              JOptionPane.showMessageDialog(null, "Data telah dihapus!");
             }catch(Exception ex){

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 19, 2018 at 01:45 AM
+-- Generation Time: Aug 12, 2018 at 05:48 AM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -19,25 +19,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `futsaldb`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `akun`
---
-
-CREATE TABLE IF NOT EXISTS `akun` (
-  `kd_akun` varchar(8) NOT NULL,
-  `nm_akun` varchar(20) NOT NULL,
-  `jenis_akun` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `akun`
---
-
-INSERT INTO `akun` (`kd_akun`, `nm_akun`, `jenis_akun`) VALUES
-('Akun-001', 'Bayar Listrik', 'Aktiva');
 
 -- --------------------------------------------------------
 
@@ -74,6 +55,90 @@ INSERT INTO `booking` (`kd_booking`, `tgl_booking`, `kd_pelanggan`, `tgl_pakai`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `data_lapangan`
+--
+
+CREATE TABLE IF NOT EXISTS `data_lapangan` (
+  `kd_lap` varchar(7) NOT NULL,
+  `jenis_lap` varchar(6) NOT NULL,
+  `tarif` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `data_lapangan`
+--
+
+INSERT INTO `data_lapangan` (`kd_lap`, `jenis_lap`, `tarif`) VALUES
+('Lap-001', 'Vinyl', 90000),
+('Lap-002', 'Vinyl', 90000),
+('Lap-003', 'Vinyl', 90000),
+('Lap-004', 'Rumput', 80000),
+('Lap-005', 'Rumput', 80000),
+('Lap-006', 'Rumput', 80000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `data_pelanggan`
+--
+
+CREATE TABLE IF NOT EXISTS `data_pelanggan` (
+  `kd_pelanggan` varchar(8) NOT NULL,
+  `nm_pelanggan` varchar(50) NOT NULL,
+  `alamat` varchar(100) NOT NULL,
+  `no_hp` varchar(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `data_pelanggan`
+--
+
+INSERT INTO `data_pelanggan` (`kd_pelanggan`, `nm_pelanggan`, `alamat`, `no_hp`) VALUES
+('Team-001', 'The Report', 'Jalan Hj. Gedad No 78 Ciledug Karang Tengah', '081928771877'),
+('Team-002', 'The Ice Holes', 'Jalan Raya No. 789 Kecamatan No 39', '08991119991991');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `data_perkiraan`
+--
+
+CREATE TABLE IF NOT EXISTS `data_perkiraan` (
+  `kd_perkiraan` varchar(8) NOT NULL,
+  `nm_perkiraan` varchar(20) NOT NULL,
+  `jenis_perkiraan` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `data_perkiraan`
+--
+
+INSERT INTO `data_perkiraan` (`kd_perkiraan`, `nm_perkiraan`, `jenis_perkiraan`) VALUES
+('Akun-001', 'Bayar Listrik', 'Aktiva');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `data_user`
+--
+
+CREATE TABLE IF NOT EXISTS `data_user` (
+  `kd_user` varchar(8) NOT NULL,
+  `nm_user` varchar(50) NOT NULL,
+  `hak_akses` varchar(7) NOT NULL,
+  `password` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `data_user`
+--
+
+INSERT INTO `data_user` (`kd_user`, `nm_user`, `hak_akses`, `password`) VALUES
+('User-001', 'NPC', 'Owner', '1234');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `jurnal`
 --
 
@@ -96,51 +161,6 @@ CREATE TABLE IF NOT EXISTS `jurnal_detail` (
   `debet` double NOT NULL,
   `kredit` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `lapangan`
---
-
-CREATE TABLE IF NOT EXISTS `lapangan` (
-  `kd_lap` varchar(7) NOT NULL,
-  `jenis_lap` varchar(6) NOT NULL,
-  `tarif` double NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `lapangan`
---
-
-INSERT INTO `lapangan` (`kd_lap`, `jenis_lap`, `tarif`) VALUES
-('Lap-001', 'Vinyl', 90000),
-('Lap-002', 'Vinyl', 90000),
-('Lap-003', 'Vinyl', 90000),
-('Lap-004', 'Rumput', 80000),
-('Lap-005', 'Rumput', 80000),
-('Lap-006', 'Rumput', 80000);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pelanggan`
---
-
-CREATE TABLE IF NOT EXISTS `pelanggan` (
-  `kd_pelanggan` varchar(8) NOT NULL,
-  `nm_pelanggan` varchar(50) NOT NULL,
-  `alamat` varchar(100) NOT NULL,
-  `no_hp` varchar(15) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `pelanggan`
---
-
-INSERT INTO `pelanggan` (`kd_pelanggan`, `nm_pelanggan`, `alamat`, `no_hp`) VALUES
-('Team-001', 'The Report', 'Jalan Hj. Gedad No 78 Ciledug Karang Tengah', '081928771877'),
-('Team-002', 'The Ice Holes', 'Jalan Raya No. 789 Kecamatan No 39', '08991119991991');
 
 -- --------------------------------------------------------
 
@@ -172,41 +192,39 @@ INSERT INTO `penyewaan` (`no_trans`, `tgl_sewa`, `kd_pelanggan`, `kd_booking`, `
 ('Trans-001', '2018-07-14', 'Team-001', 'Book-001', 'Lap-001', '17:00:00', '19:00:00', 2, 0, 0, 285000, 300000, 'User-001'),
 ('Trans-002', '2018-07-16', 'Team-002', 'Book-002', 'Lap-002', '15:00:00', '16:00:00', 1, 0, 0, 115000, 65000, 'User-001');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `user`
---
-
-CREATE TABLE IF NOT EXISTS `user` (
-  `kd_user` varchar(8) NOT NULL,
-  `nm_user` varchar(50) NOT NULL,
-  `hak_akses` varchar(7) NOT NULL,
-  `password` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`kd_user`, `nm_user`, `hak_akses`, `password`) VALUES
-('User-001', 'NPC', 'Owner', '1234');
-
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `akun`
---
-ALTER TABLE `akun`
-  ADD PRIMARY KEY (`kd_akun`);
 
 --
 -- Indexes for table `booking`
 --
 ALTER TABLE `booking`
   ADD PRIMARY KEY (`kd_booking`);
+
+--
+-- Indexes for table `data_lapangan`
+--
+ALTER TABLE `data_lapangan`
+  ADD PRIMARY KEY (`kd_lap`);
+
+--
+-- Indexes for table `data_pelanggan`
+--
+ALTER TABLE `data_pelanggan`
+  ADD PRIMARY KEY (`kd_pelanggan`);
+
+--
+-- Indexes for table `data_perkiraan`
+--
+ALTER TABLE `data_perkiraan`
+  ADD PRIMARY KEY (`kd_perkiraan`);
+
+--
+-- Indexes for table `data_user`
+--
+ALTER TABLE `data_user`
+  ADD PRIMARY KEY (`kd_user`);
 
 --
 -- Indexes for table `jurnal`
@@ -221,28 +239,10 @@ ALTER TABLE `jurnal_detail`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `lapangan`
---
-ALTER TABLE `lapangan`
-  ADD PRIMARY KEY (`kd_lap`);
-
---
--- Indexes for table `pelanggan`
---
-ALTER TABLE `pelanggan`
-  ADD PRIMARY KEY (`kd_pelanggan`);
-
---
 -- Indexes for table `penyewaan`
 --
 ALTER TABLE `penyewaan`
   ADD PRIMARY KEY (`no_trans`);
-
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`kd_user`);
 
 --
 -- AUTO_INCREMENT for dumped tables

@@ -1,8 +1,8 @@
 package futsalproject.form;
 
 import futsalproject.FutsalProject;
-import futsalproject.controller.LapanganController;
-import futsalproject.data.Lapangan;
+import futsalproject.controller.DataLapanganController;
+import futsalproject.data.DataLapangan;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -13,8 +13,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class FormLapangan extends javax.swing.JInternalFrame {
 
-    LapanganController lapCont = new LapanganController((FutsalProject.emf));
-    Lapangan lapangan = new Lapangan();
+    DataLapanganController lapCont = new DataLapanganController((FutsalProject.emf));
+    DataLapangan lapangan = new DataLapangan();
     DefaultTableModel model;
     /**
      * Creates new form FormLapangan
@@ -33,8 +33,8 @@ public class FormLapangan extends javax.swing.JInternalFrame {
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<Lapangan> list = lapCont.findAllLapangan();
-        for(Lapangan l : list){
+        List<DataLapangan> list = lapCont.findAllDataLapangan();
+        for(DataLapangan l : list){
             Object[] obj = new Object[3];
             obj[0] = l.getKdLap();
             obj[1] = l.getJenisLap();
@@ -45,7 +45,7 @@ public class FormLapangan extends javax.swing.JInternalFrame {
     }
     
     private void cariTable(String cari){
-        List<Lapangan> listLapangan = lapCont.searchLapangan(cari);
+        List<DataLapangan> listLapangan = lapCont.searchDataLapangan(cari);
         if(listLapangan.size() == 0){
             JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
         }else{
@@ -54,7 +54,7 @@ public class FormLapangan extends javax.swing.JInternalFrame {
             }else{
                 model.getDataVector().removeAllElements();
                 model.fireTableDataChanged();
-                for(Lapangan l : listLapangan){
+                for(DataLapangan l : listLapangan){
                 Object[] obj = new Object[3];
                 obj[0] = l.getKdLap();
                 obj[1] = l.getJenisLap();
@@ -164,7 +164,7 @@ public class FormLapangan extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Form Lapangan");
+        jLabel5.setText("Form Data Lapangan");
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
@@ -176,30 +176,23 @@ public class FormLapangan extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 577, Short.MAX_VALUE))
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jSeparator1)))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtTarif, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                            .addComponent(txtKode, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbJenis, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtTarif, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                                    .addComponent(txtKode, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cmbJenis, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -355,8 +348,8 @@ public class FormLapangan extends javax.swing.JInternalFrame {
         if(txtTarif.getText().equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(null, "Masukan harga tarif!");
         }else{
-            lapangan=lapCont.findOneLapangan(txtKode.getText());
-            Lapangan lap=new Lapangan();
+            lapangan=lapCont.findOneDataLapangan(txtKode.getText());
+            DataLapangan lap=new DataLapangan();
             if(lapangan==null){
                 lap.setKdLap(txtKode.getText());
                 lap.setJenisLap(cmbJenis.getSelectedItem().toString());
@@ -388,7 +381,7 @@ public class FormLapangan extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Pilih data yang mau dihapus!");
         }else{
         try{
-            Lapangan lapanganPK = lapCont.findOneLapangan(txtKode.getText());
+            DataLapangan lapanganPK = lapCont.findOneDataLapangan(txtKode.getText());
             lapCont.delete(lapanganPK.getKdLap());
              JOptionPane.showMessageDialog(null, "Data telah dihapus!");
             }catch(Exception ex){

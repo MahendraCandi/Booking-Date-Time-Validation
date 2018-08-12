@@ -17,17 +17,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 0085
+ * @author Candi-PC
  */
 @Entity
-@Table(name = "lapangan")
+@Table(name = "data_lapangan")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Lapangan.findAll", query = "SELECT l FROM Lapangan l")
-    , @NamedQuery(name = "Lapangan.findByKdLap", query = "SELECT l FROM Lapangan l WHERE l.kdLap = :kdLap")
-    , @NamedQuery(name = "Lapangan.findByJenisLap", query = "SELECT l FROM Lapangan l WHERE l.jenisLap = :jenisLap")
-    , @NamedQuery(name = "Lapangan.findByTarif", query = "SELECT l FROM Lapangan l WHERE l.tarif = :tarif")})
-public class Lapangan implements Serializable {
+    @NamedQuery(name = "DataLapangan.findAll", query = "SELECT d FROM DataLapangan d"),
+    @NamedQuery(name = "DataLapangan.findByKdLap", query = "SELECT d FROM DataLapangan d WHERE d.kdLap = :kdLap"),
+    @NamedQuery(name = "DataLapangan.findByJenisLap", query = "SELECT d FROM DataLapangan d WHERE d.jenisLap = :jenisLap"),
+    @NamedQuery(name = "DataLapangan.findByTarif", query = "SELECT d FROM DataLapangan d WHERE d.tarif = :tarif")})
+public class DataLapangan implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,14 +41,14 @@ public class Lapangan implements Serializable {
     @Column(name = "tarif")
     private double tarif;
 
-    public Lapangan() {
+    public DataLapangan() {
     }
 
-    public Lapangan(String kdLap) {
+    public DataLapangan(String kdLap) {
         this.kdLap = kdLap;
     }
 
-    public Lapangan(String kdLap, String jenisLap, double tarif) {
+    public DataLapangan(String kdLap, String jenisLap, double tarif) {
         this.kdLap = kdLap;
         this.jenisLap = jenisLap;
         this.tarif = tarif;
@@ -88,10 +88,10 @@ public class Lapangan implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Lapangan)) {
+        if (!(object instanceof DataLapangan)) {
             return false;
         }
-        Lapangan other = (Lapangan) object;
+        DataLapangan other = (DataLapangan) object;
         if ((this.kdLap == null && other.kdLap != null) || (this.kdLap != null && !this.kdLap.equals(other.kdLap))) {
             return false;
         }
@@ -100,7 +100,7 @@ public class Lapangan implements Serializable {
 
     @Override
     public String toString() {
-        return "futsalproject.data.Lapangan[ kdLap=" + kdLap + " ]";
+        return "futsalproject.data.DataLapangan[ kdLap=" + kdLap + " ]";
     }
     
 }

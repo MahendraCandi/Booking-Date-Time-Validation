@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import futsalproject.data.User;
+import futsalproject.data.DataUser;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class UserController implements Serializable{
         return emf.createEntityManager();
     }
     
-    public void save(User user){
+    public void save(DataUser user){
         EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
@@ -34,7 +34,7 @@ public class UserController implements Serializable{
         }
     }
     
-    public void update(User user){
+    public void update(DataUser user){
         EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
@@ -45,9 +45,9 @@ public class UserController implements Serializable{
     
     public void delete(String pk){
         EntityManager em = getEntityManager();
-        User us;
+        DataUser us;
         try{
-            us=em.getReference(User.class, pk);
+            us=em.getReference(DataUser.class, pk);
             us.getKdUser();
             em.getTransaction().begin();
             em.remove(us);
@@ -57,48 +57,48 @@ public class UserController implements Serializable{
         }
     }
     
-    public User findOneUser(String kode){
+    public DataUser findOneDataUser(String kode){
         EntityManager em=getEntityManager();
         try{
-            return em.find(User.class, kode);
+            return em.find(DataUser.class, kode);
         }finally{}
     }
     
-    public List<User> findAllUser(){
+    public List<DataUser> findAllDataUser(){
         EntityManager em = getEntityManager();
-        List<User> listUser = new ArrayList<>();
+        List<DataUser> listDataUser = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT u FROM User u");
-            listUser = q.getResultList();
+            Query q = em.createQuery("SELECT u FROM DataUser u");
+            listDataUser = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listUser;
+        return listDataUser;
     }
     
-    public List<User> searchUser(String cari){
+    public List<DataUser> searchDataUser(String cari){
         EntityManager em = getEntityManager();
-        List<User> listUser = new ArrayList<>();
+        List<DataUser> listDataUser = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT u FROM User u WHERE u.kdUser LIKE :cari OR u.nmUser LIKE :cari OR u.hakAkses LIKE :cari");
+            Query q = em.createQuery("SELECT u FROM DataUser u WHERE u.kdUser LIKE :cari OR u.nmUser LIKE :cari OR u.hakAkses LIKE :cari");
             q.setParameter("cari", "%"+cari+"%");
-            listUser = q.getResultList();
+            listDataUser = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listUser;
+        return listDataUser;
     }
     
     public String kodeOtomatis(){
         EntityManager em=null;
-        String kode="User-001";
+        String kode="DataUser-001";
         try{
             em=getEntityManager();
-            Query q=em.createQuery("SELECT u FROM User u ORDER BY u.kdUser DESC");
+            Query q=em.createQuery("SELECT u FROM DataUser u ORDER BY u.kdUser DESC");
             q.setMaxResults(1);
-            User user=(User) q.getSingleResult();
+            DataUser user=(DataUser) q.getSingleResult();
             if(q!=null){
-                DecimalFormat formatnomor = new DecimalFormat("User-000");
+                DecimalFormat formatnomor = new DecimalFormat("DataUser-000");
                 String nomorurut = user.getKdUser().substring(5);
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }

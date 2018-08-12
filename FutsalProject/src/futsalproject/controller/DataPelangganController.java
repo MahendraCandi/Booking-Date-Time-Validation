@@ -1,6 +1,6 @@
 package futsalproject.controller;
 
-import futsalproject.data.Pelanggan;
+import futsalproject.data.DataPelanggan;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -10,12 +10,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-public class PelangganController implements Serializable{
+public class DataPelangganController implements Serializable{
         private static final long serialVersionUID = 1L;
     
     private EntityManagerFactory emf=null;
     
-    public PelangganController(EntityManagerFactory emf){
+    public DataPelangganController(EntityManagerFactory emf){
         this.emf=emf;
     }
     
@@ -23,7 +23,7 @@ public class PelangganController implements Serializable{
         return emf.createEntityManager();
     }
     
-    public void save(Pelanggan pelanggan){
+    public void save(DataPelanggan pelanggan){
         EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
@@ -34,7 +34,7 @@ public class PelangganController implements Serializable{
         }
     }
     
-    public void update(Pelanggan pelanggan){
+    public void update(DataPelanggan pelanggan){
         EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
@@ -45,9 +45,9 @@ public class PelangganController implements Serializable{
     
     public void delete(String pk){
         EntityManager em = getEntityManager();
-        Pelanggan us;
+        DataPelanggan us;
         try{
-            us=em.getReference(Pelanggan.class, pk);
+            us=em.getReference(DataPelanggan.class, pk);
             us.getKdPelanggan();
             em.getTransaction().begin();
             em.remove(us);
@@ -57,36 +57,36 @@ public class PelangganController implements Serializable{
         }
     }
     
-    public Pelanggan findOnePelanggan(String kode){
+    public DataPelanggan findOneDataPelanggan(String kode){
         EntityManager em=getEntityManager();
         try{
-            return em.find(Pelanggan.class, kode);
+            return em.find(DataPelanggan.class, kode);
         }finally{}
     }
     
-    public List<Pelanggan> findAllPelanggan(){
+    public List<DataPelanggan> findAllDataPelanggan(){
         EntityManager em = getEntityManager();
-        List<Pelanggan> listPelanggan = new ArrayList<>();
+        List<DataPelanggan> listDataPelanggan = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT p FROM Pelanggan p");
-            listPelanggan = q.getResultList();
+            Query q = em.createQuery("SELECT p FROM DataPelanggan p");
+            listDataPelanggan = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listPelanggan;
+        return listDataPelanggan;
     }
     
-    public List<Pelanggan> searchPelanggan(String cari){
+    public List<DataPelanggan> searchDataPelanggan(String cari){
         EntityManager em = getEntityManager();
-        List<Pelanggan> listPelanggan = new ArrayList<>();
+        List<DataPelanggan> listDataPelanggan = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT p FROM Pelanggan p WHERE p.kdPelanggan LIKE :cari OR p.nmPelanggan LIKE :cari OR p.noHp LIKE :cari OR p.alamat LIKE :cari");
+            Query q = em.createQuery("SELECT p FROM DataPelanggan p WHERE p.kdPelanggan LIKE :cari OR p.nmPelanggan LIKE :cari OR p.noHp LIKE :cari OR p.alamat LIKE :cari");
             q.setParameter("cari", "%"+cari+"%");
-            listPelanggan = q.getResultList();
+            listDataPelanggan = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listPelanggan;
+        return listDataPelanggan;
     }
     
     public String kodeOtomatis(){
@@ -94,9 +94,9 @@ public class PelangganController implements Serializable{
         String kode="Team-001";
         try{
             em=getEntityManager();
-            Query q=em.createQuery("SELECT p FROM Pelanggan p ORDER BY p.kdPelanggan DESC");
+            Query q=em.createQuery("SELECT p FROM DataPelanggan p ORDER BY p.kdPelanggan DESC");
             q.setMaxResults(1);
-            Pelanggan pelanggan=(Pelanggan) q.getSingleResult();
+            DataPelanggan pelanggan=(DataPelanggan) q.getSingleResult();
             if(q!=null){
                 DecimalFormat formatnomor = new DecimalFormat("Team-000");
                 String nomorurut = pelanggan.getKdPelanggan().substring(5);

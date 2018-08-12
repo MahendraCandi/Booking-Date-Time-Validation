@@ -17,18 +17,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 0085
+ * @author Candi-PC
  */
 @Entity
-@Table(name = "user")
+@Table(name = "data_user")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
-    , @NamedQuery(name = "User.findByKdUser", query = "SELECT u FROM User u WHERE u.kdUser = :kdUser")
-    , @NamedQuery(name = "User.findByNmUser", query = "SELECT u FROM User u WHERE u.nmUser = :nmUser")
-    , @NamedQuery(name = "User.findByHakAkses", query = "SELECT u FROM User u WHERE u.hakAkses = :hakAkses")
-    , @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
-public class User implements Serializable {
+    @NamedQuery(name = "DataUser.findAll", query = "SELECT d FROM DataUser d"),
+    @NamedQuery(name = "DataUser.findByKdUser", query = "SELECT d FROM DataUser d WHERE d.kdUser = :kdUser"),
+    @NamedQuery(name = "DataUser.findByNmUser", query = "SELECT d FROM DataUser d WHERE d.nmUser = :nmUser"),
+    @NamedQuery(name = "DataUser.findByHakAkses", query = "SELECT d FROM DataUser d WHERE d.hakAkses = :hakAkses"),
+    @NamedQuery(name = "DataUser.findByPassword", query = "SELECT d FROM DataUser d WHERE d.password = :password")})
+public class DataUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,14 +45,14 @@ public class User implements Serializable {
     @Column(name = "password")
     private String password;
 
-    public User() {
+    public DataUser() {
     }
 
-    public User(String kdUser) {
+    public DataUser(String kdUser) {
         this.kdUser = kdUser;
     }
 
-    public User(String kdUser, String nmUser, String hakAkses, String password) {
+    public DataUser(String kdUser, String nmUser, String hakAkses, String password) {
         this.kdUser = kdUser;
         this.nmUser = nmUser;
         this.hakAkses = hakAkses;
@@ -101,10 +101,10 @@ public class User implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User)) {
+        if (!(object instanceof DataUser)) {
             return false;
         }
-        User other = (User) object;
+        DataUser other = (DataUser) object;
         if ((this.kdUser == null && other.kdUser != null) || (this.kdUser != null && !this.kdUser.equals(other.kdUser))) {
             return false;
         }
@@ -113,7 +113,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "futsalproject.data.User[ kdUser=" + kdUser + " ]";
+        return "futsalproject.data.DataUser[ kdUser=" + kdUser + " ]";
     }
     
 }

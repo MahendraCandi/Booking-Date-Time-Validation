@@ -1,8 +1,8 @@
 package futsalproject.form;
 
 import futsalproject.FutsalProject;
-import futsalproject.controller.PelangganController;
-import futsalproject.data.Pelanggan;
+import futsalproject.controller.DataPelangganController;
+import futsalproject.data.DataPelanggan;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -13,8 +13,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class FormPelanggan extends javax.swing.JInternalFrame {
 
-    PelangganController pCont = new PelangganController(FutsalProject.emf);
-    Pelanggan pelanggan = new Pelanggan();
+    DataPelangganController pCont = new DataPelangganController(FutsalProject.emf);
+    DataPelanggan pelanggan = new DataPelanggan();
     DefaultTableModel model;
     /**
      * Creates new form FormPelanggan
@@ -34,8 +34,8 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<Pelanggan> list = pCont.findAllPelanggan();
-        for(Pelanggan p : list){
+        List<DataPelanggan> list = pCont.findAllDataPelanggan();
+        for(DataPelanggan p : list){
             Object[] obj = new Object[4];
             obj[0] = p.getKdPelanggan();
             obj[1] = p.getNmPelanggan();
@@ -47,7 +47,7 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
     }
     
     private void cariTable(String cari){
-        List<Pelanggan> listPelanggan = pCont.searchPelanggan(cari);
+        List<DataPelanggan> listPelanggan = pCont.searchDataPelanggan(cari);
         if(listPelanggan.size() == 0){
             JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
         }else{
@@ -56,7 +56,7 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
             }else{
                 model.getDataVector().removeAllElements();
                 model.fireTableDataChanged();
-                for(Pelanggan p : listPelanggan){
+                for(DataPelanggan p : listPelanggan){
                     Object[] obj = new Object[4];
                     obj[0] = p.getKdPelanggan();
                     obj[1] = p.getNmPelanggan();
@@ -167,7 +167,7 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Form Pelanggan");
+        jLabel5.setText("Form Data Pelanggan");
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
@@ -383,8 +383,8 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
         if(txtNamaPelanggan.getText().equalsIgnoreCase("") || txtNoHP.getText().equalsIgnoreCase("") || txtAlamat.getText().equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(null, "Data tidak valid!");
         }else{
-            pelanggan=pCont.findOnePelanggan(txtKodePelanggan.getText());
-            Pelanggan pel=new Pelanggan();
+            pelanggan=pCont.findOneDataPelanggan(txtKodePelanggan.getText());
+            DataPelanggan pel=new DataPelanggan();
             if(pelanggan==null){
                 pel.setKdPelanggan(txtKodePelanggan.getText());
                 pel.setNmPelanggan(txtNamaPelanggan.getText());
@@ -418,7 +418,7 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Pilih data yang mau dihapus!");
         }else{
         try{
-            Pelanggan pelangganPK = pCont.findOnePelanggan(txtKodePelanggan.getText());
+            DataPelanggan pelangganPK = pCont.findOneDataPelanggan(txtKodePelanggan.getText());
             pCont.delete(pelangganPK.getKdPelanggan());
              JOptionPane.showMessageDialog(null, "Data telah dihapus!");
             }catch(Exception ex){

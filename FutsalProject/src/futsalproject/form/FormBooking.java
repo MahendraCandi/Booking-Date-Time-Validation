@@ -3,7 +3,7 @@ package futsalproject.form;
 import futsalproject.FutsalProject;
 import futsalproject.controller.BookingController;
 import futsalproject.data.Booking;
-import futsalproject.data.User;
+import futsalproject.data.DataUser;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -20,14 +20,14 @@ import javax.swing.table.TableCellRenderer;
 
 public class FormBooking extends javax.swing.JInternalFrame {
 
-    User userLogin = new User();
+    DataUser userLogin = new DataUser();
     Booking booking = new Booking();
     BookingController bCont = new BookingController(FutsalProject.emf);
     DefaultTableModel model;
     /**
      * Creates new form FormBooking
      */
-    public FormBooking(User user) {
+    public FormBooking(DataUser user) {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);

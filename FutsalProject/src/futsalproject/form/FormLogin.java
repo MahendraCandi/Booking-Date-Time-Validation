@@ -1,7 +1,7 @@
 package futsalproject.form;
 
 import futsalproject.FutsalProject;
-import futsalproject.data.User;
+import futsalproject.data.DataUser;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -58,18 +58,18 @@ public class FormLogin extends javax.swing.JFrame {
         EntityManager em=null;
         try {
             em=FutsalProject.emf.createEntityManager();
-            Query q=em.createQuery("SELECT u FROM User u WHERE u.kdUser = :kodeUser");
+            Query q=em.createQuery("SELECT u FROM DataUser u WHERE u.kdUser = :kodeUser");
             q.setParameter("kodeUser", txtLogin.getText());
-            List<User> list = q.getResultList();
+            List<DataUser> list = q.getResultList();
             if(!list.isEmpty()){
-                for(User us : list){
+                for(DataUser us : list){
                     nama = us.getNmUser();
                     hakAkses = us.getHakAkses();
                     kodeUser = us.getKdUser();
                     password = us.getPassword();
                 }
                 if(txtPassword.getText().equals(password)){
-                    User userLogin = new User();
+                    DataUser userLogin = new DataUser();
                     userLogin.setKdUser(kodeUser);
                     userLogin.setHakAkses(hakAkses);
                     userLogin.setNmUser(nama);

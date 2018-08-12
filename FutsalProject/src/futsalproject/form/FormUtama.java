@@ -1,6 +1,6 @@
 package futsalproject.form;
 
-import futsalproject.data.User;
+import futsalproject.data.DataUser;
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JComponent;
@@ -12,14 +12,14 @@ public class FormUtama extends javax.swing.JFrame {
     private String nama;
     private String hakAkses;
     private String kodeUser;
-    private User userLogin = new User();
+    private DataUser userLogin = new DataUser();
     
     int xx;
     int xy;
     /**
      * Creates new form FormUtama
      */
-    public FormUtama(User user) {
+    public FormUtama(DataUser user) {
         initComponents();
         setLocationRelativeTo(null);
         jMenuBar1.setUI(new BasicMenuBarUI(){
@@ -250,7 +250,7 @@ public class FormUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuLapanganActionPerformed
 
     private void MenuAkunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuAkunActionPerformed
-        FormAkun fa = new FormAkun();
+        FormPerkiraan fa = new FormPerkiraan();
         showForm(fa);
     }//GEN-LAST:event_MenuAkunActionPerformed
 

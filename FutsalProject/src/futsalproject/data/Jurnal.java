@@ -20,16 +20,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 0085
+ * @author Candi-PC
  */
 @Entity
 @Table(name = "jurnal")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Jurnal.findAll", query = "SELECT j FROM Jurnal j")
-    , @NamedQuery(name = "Jurnal.findByNoJurnal", query = "SELECT j FROM Jurnal j WHERE j.noJurnal = :noJurnal")
-    , @NamedQuery(name = "Jurnal.findByTglJurnal", query = "SELECT j FROM Jurnal j WHERE j.tglJurnal = :tglJurnal")
-    , @NamedQuery(name = "Jurnal.findByNoTrans", query = "SELECT j FROM Jurnal j WHERE j.noTrans = :noTrans")})
+    @NamedQuery(name = "Jurnal.findAll", query = "SELECT j FROM Jurnal j"),
+    @NamedQuery(name = "Jurnal.findByNoJurnal", query = "SELECT j FROM Jurnal j WHERE j.noJurnal = :noJurnal"),
+    @NamedQuery(name = "Jurnal.findByTglJurnal", query = "SELECT j FROM Jurnal j WHERE j.tglJurnal = :tglJurnal"),
+    @NamedQuery(name = "Jurnal.findByNoTrans", query = "SELECT j FROM Jurnal j WHERE j.noTrans = :noTrans")})
 public class Jurnal implements Serializable {
 
     private static final long serialVersionUID = 1L;

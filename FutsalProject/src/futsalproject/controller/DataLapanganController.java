@@ -1,6 +1,6 @@
 package futsalproject.controller;
 
-import futsalproject.data.Lapangan;
+import futsalproject.data.DataLapangan;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -10,12 +10,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-public class LapanganController implements Serializable{
+public class DataLapanganController implements Serializable{
     private static final long serialVersionUID = 1L;
     
     private EntityManagerFactory emf=null;
     
-    public LapanganController(EntityManagerFactory emf){
+    public DataLapanganController(EntityManagerFactory emf){
         this.emf=emf;
     }
     
@@ -23,7 +23,7 @@ public class LapanganController implements Serializable{
         return emf.createEntityManager();
     }
     
-    public void save(Lapangan lapangan){
+    public void save(DataLapangan lapangan){
         EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
@@ -34,7 +34,7 @@ public class LapanganController implements Serializable{
         }
     }
     
-    public void update(Lapangan lapangan){
+    public void update(DataLapangan lapangan){
         EntityManager em = getEntityManager();
         try{
             em.getTransaction().begin();
@@ -45,9 +45,9 @@ public class LapanganController implements Serializable{
     
     public void delete(String pk){
         EntityManager em = getEntityManager();
-        Lapangan lap;
+        DataLapangan lap;
         try{
-            lap=em.getReference(Lapangan.class, pk);
+            lap=em.getReference(DataLapangan.class, pk);
             lap.getKdLap();
             em.getTransaction().begin();
             em.remove(lap);
@@ -57,36 +57,36 @@ public class LapanganController implements Serializable{
         }
     }
     
-    public Lapangan findOneLapangan(String kode){
+    public DataLapangan findOneDataLapangan(String kode){
         EntityManager em=getEntityManager();
         try{
-            return em.find(Lapangan.class, kode);
+            return em.find(DataLapangan.class, kode);
         }finally{}
     }
     
-    public List<Lapangan> findAllLapangan(){
+    public List<DataLapangan> findAllDataLapangan(){
         EntityManager em = getEntityManager();
-        List<Lapangan> listLapangan = new ArrayList<>();
+        List<DataLapangan> listDataLapangan = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT l FROM Lapangan l");
-            listLapangan = q.getResultList();
+            Query q = em.createQuery("SELECT l FROM DataLapangan l");
+            listDataLapangan = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listLapangan;
+        return listDataLapangan;
     }
     
-    public List<Lapangan> searchLapangan(String cari){
+    public List<DataLapangan> searchDataLapangan(String cari){
         EntityManager em = getEntityManager();
-        List<Lapangan> listLapangan = new ArrayList<>();
+        List<DataLapangan> listDataLapangan = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT l FROM Lapangan l WHERE l.kdLap LIKE :cari OR l.jenisLap LIKE :cari");
+            Query q = em.createQuery("SELECT l FROM DataLapangan l WHERE l.kdLap LIKE :cari OR l.jenisLap LIKE :cari");
             q.setParameter("cari", "%"+cari+"%");
-            listLapangan = q.getResultList();
+            listDataLapangan = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listLapangan;
+        return listDataLapangan;
     }
     
     public String kodeOtomatis(){
@@ -94,9 +94,9 @@ public class LapanganController implements Serializable{
         String kode="Lap-001";
         try{
             em=getEntityManager();
-            Query q=em.createQuery("SELECT l FROM Lapangan l ORDER BY l.kdLap DESC");
+            Query q=em.createQuery("SELECT l FROM DataLapangan l ORDER BY l.kdLap DESC");
             q.setMaxResults(1);
-            Lapangan lapangan=(Lapangan) q.getSingleResult();
+            DataLapangan lapangan=(DataLapangan) q.getSingleResult();
             if(q!=null){
                 DecimalFormat formatnomor = new DecimalFormat("Lap-000");
                 String nomorurut = lapangan.getKdLap().substring(4);

@@ -2,12 +2,12 @@
 
 import futsalproject.FutsalProject;
 import futsalproject.controller.BookingController;
-import futsalproject.controller.LapanganController;
-import futsalproject.controller.PelangganController;
+import futsalproject.controller.DataLapanganController;
+import futsalproject.controller.DataPelangganController;
 import futsalproject.controller.PenyewaanController;
 import futsalproject.data.Booking;
-import futsalproject.data.Lapangan;
-import futsalproject.data.Pelanggan;
+import futsalproject.data.DataLapangan;
+import futsalproject.data.DataPelanggan;
 import futsalproject.data.Penyewaan;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,12 +23,12 @@ public class FormSewa extends javax.swing.JInternalFrame {
 
     Penyewaan penyewaan = new Penyewaan();
     Booking booking = new Booking();
-    Pelanggan pelanggan = new Pelanggan();
-    Lapangan lapangan = new Lapangan();
+    DataPelanggan pelanggan = new DataPelanggan();
+    DataLapangan lapangan = new DataLapangan();
     BookingController bCont = new BookingController(FutsalProject.emf);
     PenyewaanController sewaCont = new PenyewaanController(FutsalProject.emf);
-    PelangganController pCont = new PelangganController(FutsalProject.emf);
-    LapanganController lCont = new LapanganController(FutsalProject.emf);
+    DataPelangganController pCont = new DataPelangganController(FutsalProject.emf);
+    DataLapanganController lCont = new DataLapanganController(FutsalProject.emf);
     SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"));
     DateFormat df = new SimpleDateFormat("HH:mm");
     
@@ -113,8 +113,8 @@ public class FormSewa extends javax.swing.JInternalFrame {
         }else{
             booking = bCont.findOneBooking(penyewaan.getKdBooking());
         }
-        pelanggan = pCont.findOnePelanggan(booking.getKdPelanggan());
-        lapangan = lCont.findOneLapangan(booking.getKdLap());
+        pelanggan = pCont.findOneDataPelanggan(booking.getKdPelanggan());
+        lapangan = lCont.findOneDataLapangan(booking.getKdLap());
         txtTglBooking.setText(sdf.format(booking.getTglBooking()));
         txtKodePelanggan.setText(booking.getKdPelanggan());
         txtNamaPelanggan.setText(pelanggan.getNmPelanggan());

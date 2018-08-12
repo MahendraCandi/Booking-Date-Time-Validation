@@ -17,18 +17,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 0085
+ * @author Candi-PC
  */
 @Entity
-@Table(name = "pelanggan")
+@Table(name = "data_pelanggan")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Pelanggan.findAll", query = "SELECT p FROM Pelanggan p")
-    , @NamedQuery(name = "Pelanggan.findByKdPelanggan", query = "SELECT p FROM Pelanggan p WHERE p.kdPelanggan = :kdPelanggan")
-    , @NamedQuery(name = "Pelanggan.findByNmPelanggan", query = "SELECT p FROM Pelanggan p WHERE p.nmPelanggan = :nmPelanggan")
-    , @NamedQuery(name = "Pelanggan.findByAlamat", query = "SELECT p FROM Pelanggan p WHERE p.alamat = :alamat")
-    , @NamedQuery(name = "Pelanggan.findByNoHp", query = "SELECT p FROM Pelanggan p WHERE p.noHp = :noHp")})
-public class Pelanggan implements Serializable {
+    @NamedQuery(name = "DataPelanggan.findAll", query = "SELECT d FROM DataPelanggan d"),
+    @NamedQuery(name = "DataPelanggan.findByKdPelanggan", query = "SELECT d FROM DataPelanggan d WHERE d.kdPelanggan = :kdPelanggan"),
+    @NamedQuery(name = "DataPelanggan.findByNmPelanggan", query = "SELECT d FROM DataPelanggan d WHERE d.nmPelanggan = :nmPelanggan"),
+    @NamedQuery(name = "DataPelanggan.findByAlamat", query = "SELECT d FROM DataPelanggan d WHERE d.alamat = :alamat"),
+    @NamedQuery(name = "DataPelanggan.findByNoHp", query = "SELECT d FROM DataPelanggan d WHERE d.noHp = :noHp")})
+public class DataPelanggan implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,14 +45,14 @@ public class Pelanggan implements Serializable {
     @Column(name = "no_hp")
     private String noHp;
 
-    public Pelanggan() {
+    public DataPelanggan() {
     }
 
-    public Pelanggan(String kdPelanggan) {
+    public DataPelanggan(String kdPelanggan) {
         this.kdPelanggan = kdPelanggan;
     }
 
-    public Pelanggan(String kdPelanggan, String nmPelanggan, String alamat, String noHp) {
+    public DataPelanggan(String kdPelanggan, String nmPelanggan, String alamat, String noHp) {
         this.kdPelanggan = kdPelanggan;
         this.nmPelanggan = nmPelanggan;
         this.alamat = alamat;
@@ -101,10 +101,10 @@ public class Pelanggan implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Pelanggan)) {
+        if (!(object instanceof DataPelanggan)) {
             return false;
         }
-        Pelanggan other = (Pelanggan) object;
+        DataPelanggan other = (DataPelanggan) object;
         if ((this.kdPelanggan == null && other.kdPelanggan != null) || (this.kdPelanggan != null && !this.kdPelanggan.equals(other.kdPelanggan))) {
             return false;
         }
@@ -113,7 +113,7 @@ public class Pelanggan implements Serializable {
 
     @Override
     public String toString() {
-        return "futsalproject.data.Pelanggan[ kdPelanggan=" + kdPelanggan + " ]";
+        return "futsalproject.data.DataPelanggan[ kdPelanggan=" + kdPelanggan + " ]";
     }
     
 }

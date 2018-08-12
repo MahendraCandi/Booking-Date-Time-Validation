@@ -1,8 +1,8 @@
 package futsalproject.form;
 
 import futsalproject.FutsalProject;
-import futsalproject.controller.AkunController;
-import futsalproject.data.Akun;
+import futsalproject.controller.DataPerkiraanController;
+import futsalproject.data.DataPerkiraan;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -11,43 +11,43 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class FormAkun extends javax.swing.JInternalFrame {
+public class FormPerkiraan extends javax.swing.JInternalFrame {
 
-    AkunController aCont = new AkunController(FutsalProject.emf);
-    Akun akun = new Akun();
+    DataPerkiraanController aCont = new DataPerkiraanController(FutsalProject.emf);
+    DataPerkiraan akun = new DataPerkiraan();
     DefaultTableModel model;
     /**
-     * Creates new form FormAkun
+     * Creates new form FormPerkiraan
      */
-    public FormAkun() {
+    public FormPerkiraan() {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
         model=new DefaultTableModel();
-        model.addColumn("Kode Akun");
-        model.addColumn("Nama Akun");
-        model.addColumn("Jenis Akun");
-        tableAkun.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
+        model.addColumn("Kode Perkiraan");
+        model.addColumn("Nama Perkiraan");
+        model.addColumn("Jenis Perkiraan");
+        tablePerkiraan.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
         tidakAktif();
     }
     
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<Akun> list = aCont.findAllAkun();
-        for(Akun a : list){
+        List<DataPerkiraan> list = aCont.findAllDataPerkiraan();
+        for(DataPerkiraan a : list){
             Object[] obj = new Object[3];
-            obj[0] = a.getKdAkun();
-            obj[1] = a.getNmAkun();
-            obj[2] = a.getJenisAkun();
+            obj[0] = a.getKdPerkiraan();
+            obj[1] = a.getNmPerkiraan();
+            obj[2] = a.getJenisPerkiraan();
             model.addRow(obj);
         }
-        tableAkun.setModel(model);
+        tablePerkiraan.setModel(model);
     }
     
     private void cariTable(String cari){
-        List<Akun> listAkun = aCont.searchAkun(cari);
-        if(listAkun.size() == 0){
+        List<DataPerkiraan> listDataPerkiraan = aCont.searchDataPerkiraan(cari);
+        if(listDataPerkiraan.size() == 0){
             JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
         }else{
             if(cari.isEmpty()){
@@ -55,27 +55,27 @@ public class FormAkun extends javax.swing.JInternalFrame {
             }else{
                 model.getDataVector().removeAllElements();
                 model.fireTableDataChanged();
-                for(Akun a : listAkun){
+                for(DataPerkiraan a : listDataPerkiraan){
                 Object[] obj = new Object[3];
-                obj[0] = a.getKdAkun();
-                obj[1] = a.getNmAkun();
-                obj[2] = a.getJenisAkun();
+                obj[0] = a.getKdPerkiraan();
+                obj[1] = a.getNmPerkiraan();
+                obj[2] = a.getJenisPerkiraan();
                 model.addRow(obj);
             }
-            tableAkun.setModel(model);
+            tablePerkiraan.setModel(model);
             }
         }
     }   
     
     private void seleksiBaris(){
-        tableAkun.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tablePerkiraan.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                int baris=tableAkun.getSelectedRow(); 
+                int baris=tablePerkiraan.getSelectedRow(); 
                 if(baris != -1){                        
-                    txtKodeAkun.setText(tableAkun.getValueAt(baris, 0).toString());
-                    txtNamaAkun.setText(tableAkun.getValueAt(baris, 1).toString());
-                    cmbJenis.setSelectedItem(tableAkun.getValueAt(baris, 2).toString());
+                    txtKodePerkiraan.setText(tablePerkiraan.getValueAt(baris, 0).toString());
+                    txtNamaPerkiraan.setText(tablePerkiraan.getValueAt(baris, 1).toString());
+                    cmbJenis.setSelectedItem(tablePerkiraan.getValueAt(baris, 2).toString());
                 }
             }
         });
@@ -96,15 +96,15 @@ public class FormAkun extends javax.swing.JInternalFrame {
         btnTambah = new javax.swing.JButton();
         btnSimpan = new javax.swing.JButton();
         btnHapus = new javax.swing.JButton();
-        txtKodeAkun = new javax.swing.JTextField();
+        txtKodePerkiraan = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtNamaAkun = new javax.swing.JTextField();
+        txtNamaPerkiraan = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         cmbJenis = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableAkun = new javax.swing.JTable();
+        tablePerkiraan = new javax.swing.JTable();
         txtCari = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
 
@@ -113,7 +113,7 @@ public class FormAkun extends javax.swing.JInternalFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("Kode Akun");
+        jLabel1.setText("Kode Perkiaraan");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
@@ -148,19 +148,19 @@ public class FormAkun extends javax.swing.JInternalFrame {
         });
         jPanel2.add(btnHapus);
 
-        txtKodeAkun.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtKodePerkiraan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("Nama Akun");
+        jLabel2.setText("Nama Perkiraan");
 
-        txtNamaAkun.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtNamaPerkiraan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("Jenis Akun");
+        jLabel3.setText("Jenis Perkiraan");
 
         cmbJenis.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cmbJenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aktiva", "Harta", "Hutang", "Piutang" }));
@@ -168,7 +168,7 @@ public class FormAkun extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Form Akun");
+        jLabel5.setText("Form Data Perkiraan");
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
@@ -186,15 +186,17 @@ public class FormAkun extends javax.swing.JInternalFrame {
                     .addComponent(jSeparator1))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(txtNamaAkun, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtKodeAkun, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNamaPerkiraan, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtKodePerkiraan, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmbJenis, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(519, Short.MAX_VALUE))
         );
@@ -207,11 +209,11 @@ public class FormAkun extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtKodeAkun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtKodePerkiraan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNamaAkun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNamaPerkiraan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -221,7 +223,7 @@ public class FormAkun extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        tableAkun.setModel(new javax.swing.table.DefaultTableModel(
+        tablePerkiraan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -229,7 +231,7 @@ public class FormAkun extends javax.swing.JInternalFrame {
                 "Kode Akun", "Nama Akun", "Jenis Akun"
             }
         ));
-        jScrollPane1.setViewportView(tableAkun);
+        jScrollPane1.setViewportView(tablePerkiraan);
 
         txtCari.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -311,15 +313,15 @@ public class FormAkun extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable tableAkun;
+    private javax.swing.JTable tablePerkiraan;
     private javax.swing.JTextField txtCari;
-    private javax.swing.JTextField txtKodeAkun;
-    private javax.swing.JTextField txtNamaAkun;
+    private javax.swing.JTextField txtKodePerkiraan;
+    private javax.swing.JTextField txtNamaPerkiraan;
     // End of variables declaration//GEN-END:variables
 
     private void tidakAktif(){
-        txtKodeAkun.setEnabled(false);
-        txtNamaAkun.setEnabled(false);
+        txtKodePerkiraan.setEnabled(false);
+        txtNamaPerkiraan.setEnabled(false);
         cmbJenis.setEnabled(false);
         txtCari.setEnabled(false);
         btnSimpan.setEnabled(false);
@@ -327,7 +329,8 @@ public class FormAkun extends javax.swing.JInternalFrame {
     }
     
     private void aktif(){
-        txtNamaAkun.setEnabled(true);
+        txtKodePerkiraan.setEnabled(true);
+        txtNamaPerkiraan.setEnabled(true);
         cmbJenis.setEnabled(true);
         txtCari.setEnabled(true);
         btnSimpan.setEnabled(true);
@@ -336,24 +339,24 @@ public class FormAkun extends javax.swing.JInternalFrame {
     }
     
     private void bersih(){
-        txtKodeAkun.setText(aCont.kodeOtomatis());
-        txtNamaAkun.setText("");
+        txtKodePerkiraan.setText("");
+        txtNamaPerkiraan.setText("");
         cmbJenis.setSelectedIndex(0);
         txtCari.setText("");
         showTable();
-        txtNamaAkun.requestFocus();
+        txtNamaPerkiraan.requestFocus();
     }
     
     private void simpan(){
-        if(txtNamaAkun.getText().equalsIgnoreCase("")){
+        if(txtNamaPerkiraan.getText().equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(null, "Masukan nama Akun!");
         }else{
-            akun=aCont.findOneAkun(txtKodeAkun.getText());
-            Akun a=new Akun();
+            akun=aCont.findOneDataPerkiraan(txtKodePerkiraan.getText());
+            DataPerkiraan a=new DataPerkiraan();
             if(akun==null){
-                a.setKdAkun(txtKodeAkun.getText());
-                a.setNmAkun(txtNamaAkun.getText());
-                a.setJenisAkun(cmbJenis.getSelectedItem().toString());
+                a.setKdPerkiraan(txtKodePerkiraan.getText());
+                a.setNmPerkiraan(txtNamaPerkiraan.getText());
+                a.setJenisPerkiraan(cmbJenis.getSelectedItem().toString());
                 try{
                     aCont.save(a);
                 }catch(Exception ex){
@@ -361,9 +364,9 @@ public class FormAkun extends javax.swing.JInternalFrame {
                 }
                 JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
             }else{
-                a.setKdAkun(txtKodeAkun.getText());
-                a.setNmAkun(txtNamaAkun.getText());
-                a.setJenisAkun(cmbJenis.getSelectedItem().toString());
+                a.setKdPerkiraan(txtKodePerkiraan.getText());
+                a.setNmPerkiraan(txtNamaPerkiraan.getText());
+                a.setJenisPerkiraan(cmbJenis.getSelectedItem().toString());
                 try{
                     aCont.update(a);
                 }catch(Exception ex){
@@ -376,13 +379,13 @@ public class FormAkun extends javax.swing.JInternalFrame {
     }
     
     private void hapus() {
-        int baris = tableAkun.getSelectedRow();
+        int baris = tablePerkiraan.getSelectedRow();
         if(baris==-1){
             JOptionPane.showMessageDialog(null, "Pilih data yang mau dihapus!");
         }else{
         try{
-            Akun akunPK = aCont.findOneAkun(txtKodeAkun.getText());
-            aCont.delete(akunPK.getKdAkun());
+            DataPerkiraan akunPK = aCont.findOneDataPerkiraan(txtKodePerkiraan.getText());
+            aCont.delete(akunPK.getKdPerkiraan());
              JOptionPane.showMessageDialog(null, "Data telah dihapus!");
             }catch(Exception ex){
                 ex.printStackTrace();

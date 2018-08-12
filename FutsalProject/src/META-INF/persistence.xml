@@ -10,6 +10,10 @@
     <class>futsalproject.data.User</class>
     <class>futsalproject.data.Lapangan</class>
     <class>futsalproject.data.Pelanggan</class>
+    <class>futsalproject.data.DataPerkiraan</class>
+    <class>futsalproject.data.DataLapangan</class>
+    <class>futsalproject.data.DataUser</class>
+    <class>futsalproject.data.DataPelanggan</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/futsaldb?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

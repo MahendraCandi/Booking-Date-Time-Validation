@@ -64,6 +64,31 @@ public class JurnalController implements Serializable{
         }finally{}
     }
     
+    public List<Jurnal> findAllJurnal(){
+        EntityManager em = getEntityManager();
+        List<Jurnal> list = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT j FROM Jurnal j");
+            list = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Jurnal> SearchJurnal(String cari){
+        EntityManager em = getEntityManager();
+        List<Jurnal> list = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT j FROM Jurnal j WHERE j.noJurnal LIKE :cari OR j.noTrans LIKE :cari");
+            q.setParameter("cari", "%" +cari+ "%");
+            list = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
     public String nomorOtomatis(){
         String kode="Jurnal-001";
         EntityManager em=null;
@@ -78,7 +103,7 @@ public class JurnalController implements Serializable{
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }
         }catch(NoResultException ex){
-            return null;
+            return kode;
         }
         return kode;
     }

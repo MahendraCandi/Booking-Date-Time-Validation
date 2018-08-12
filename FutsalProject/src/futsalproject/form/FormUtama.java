@@ -56,6 +56,7 @@ public class FormUtama extends javax.swing.JFrame {
         MenuTransaksi = new javax.swing.JMenu();
         MenuBooking = new javax.swing.JMenuItem();
         MenuSewa = new javax.swing.JMenuItem();
+        MenuJurnal = new javax.swing.JMenuItem();
         MenuLaporan = new javax.swing.JMenu();
         MenuLapPenyewaan = new javax.swing.JMenuItem();
         MenuLapKas = new javax.swing.JMenuItem();
@@ -149,7 +150,7 @@ public class FormUtama extends javax.swing.JFrame {
         menuMaster.add(MenuLapangan);
 
         MenuAkun.setBackground(new java.awt.Color(255, 255, 255));
-        MenuAkun.setText("Akun");
+        MenuAkun.setText("Perkiraan");
         MenuAkun.setOpaque(true);
         MenuAkun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -191,6 +192,14 @@ public class FormUtama extends javax.swing.JFrame {
             }
         });
         MenuTransaksi.add(MenuSewa);
+
+        MenuJurnal.setText("Jurnal");
+        MenuJurnal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuJurnalActionPerformed(evt);
+            }
+        });
+        MenuTransaksi.add(MenuJurnal);
 
         jMenuBar1.add(MenuTransaksi);
 
@@ -269,6 +278,11 @@ public class FormUtama extends javax.swing.JFrame {
         showForm(fs);
     }//GEN-LAST:event_MenuSewaActionPerformed
 
+    private void MenuJurnalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuJurnalActionPerformed
+        FormJurnal fj = new FormJurnal();
+        showForm(fj);
+    }//GEN-LAST:event_MenuJurnalActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -307,6 +321,7 @@ public class FormUtama extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem MenuAkun;
     private javax.swing.JMenuItem MenuBooking;
+    private javax.swing.JMenuItem MenuJurnal;
     private javax.swing.JMenuItem MenuLapKas;
     private javax.swing.JMenuItem MenuLapPenyewaan;
     private javax.swing.JMenuItem MenuLapangan;

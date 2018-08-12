@@ -163,7 +163,7 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
         jLabel3.setText("Jenis Perkiraan");
 
         cmbJenis.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbJenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aktiva", "Harta", "Hutang", "Piutang" }));
+        cmbJenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aktiva Lancar", "Aktiva Tetap", "Aktiva Lain-Lain", "Hutang Jangka Pendek", "Hutang Jangka Panjang", "Modal", "Pendapatan Dalam Usaha", "Pendapatan Diluar Usaha", "Beban Didalam Usaha", "Beban Diluar Usaha" }));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -344,7 +344,7 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
         cmbJenis.setSelectedIndex(0);
         txtCari.setText("");
         showTable();
-        txtNamaPerkiraan.requestFocus();
+        txtKodePerkiraan.requestFocus();
     }
     
     private void simpan(){

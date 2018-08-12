@@ -63,6 +63,19 @@ public class DataPerkiraanController implements Serializable{
         }finally{}
     }
     
+    public DataPerkiraan findOneDataPerkiraanByNama(String nama){
+        EntityManager em = getEntityManager();
+        DataPerkiraan dp = new DataPerkiraan();
+        try {
+            Query q = em.createQuery("SELECT da FROM DataPerkiraan da WHERE da.nmPerkiraan = :nama");
+            q.setParameter("nama", nama);
+            dp = (DataPerkiraan) q.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+        return dp;
+    }
+    
     public List<DataPerkiraan> findAllDataPerkiraan(){
         EntityManager em = getEntityManager();
         List<DataPerkiraan> listDataPerkiraan = new ArrayList<>();

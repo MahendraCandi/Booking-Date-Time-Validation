@@ -95,6 +95,19 @@ public class PenyewaanController implements Serializable{
         return listBooking;
     }
     
+    // form jurnal
+    public List<Penyewaan> findAllPenyewaanNotExistInJurnal(){
+        EntityManager em = getEntityManager();
+        List<Penyewaan> list = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT p FROM Penyewaan p WHERE NOT EXISTS (SELECT j FROM Jurnal j WHERE p.noTrans = j.noTrans)");
+            list = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
     // cari member eksis untuk diskon, di form booking
     public List<Penyewaan> searchMemberEksis(String kdPelanggan, Date tglSewa){
         EntityManager em = getEntityManager();

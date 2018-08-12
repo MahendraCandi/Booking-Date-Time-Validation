@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "JurnalDetail.findAll", query = "SELECT j FROM JurnalDetail j"),
     @NamedQuery(name = "JurnalDetail.findById", query = "SELECT j FROM JurnalDetail j WHERE j.id = :id"),
     @NamedQuery(name = "JurnalDetail.findByNoJurnal", query = "SELECT j FROM JurnalDetail j WHERE j.noJurnal = :noJurnal"),
-    @NamedQuery(name = "JurnalDetail.findByKdAkun", query = "SELECT j FROM JurnalDetail j WHERE j.kdAkun = :kdAkun"),
+    @NamedQuery(name = "JurnalDetail.findByKdPerkiraan", query = "SELECT j FROM JurnalDetail j WHERE j.kdPerkiraan = :kdPerkiraan"),
     @NamedQuery(name = "JurnalDetail.findByDebet", query = "SELECT j FROM JurnalDetail j WHERE j.debet = :debet"),
     @NamedQuery(name = "JurnalDetail.findByKredit", query = "SELECT j FROM JurnalDetail j WHERE j.kredit = :kredit")})
 public class JurnalDetail implements Serializable {
@@ -43,8 +43,8 @@ public class JurnalDetail implements Serializable {
     @Column(name = "no_jurnal")
     private String noJurnal;
     @Basic(optional = false)
-    @Column(name = "kd_akun")
-    private String kdAkun;
+    @Column(name = "kd_perkiraan")
+    private String kdPerkiraan;
     @Basic(optional = false)
     @Column(name = "debet")
     private double debet;
@@ -59,10 +59,10 @@ public class JurnalDetail implements Serializable {
         this.id = id;
     }
 
-    public JurnalDetail(Integer id, String noJurnal, String kdAkun, double debet, double kredit) {
+    public JurnalDetail(Integer id, String noJurnal, String kdPerkiraan, double debet, double kredit) {
         this.id = id;
         this.noJurnal = noJurnal;
-        this.kdAkun = kdAkun;
+        this.kdPerkiraan = kdPerkiraan;
         this.debet = debet;
         this.kredit = kredit;
     }
@@ -83,12 +83,12 @@ public class JurnalDetail implements Serializable {
         this.noJurnal = noJurnal;
     }
 
-    public String getKdAkun() {
-        return kdAkun;
+    public String getKdPerkiraan() {
+        return kdPerkiraan;
     }
 
-    public void setKdAkun(String kdAkun) {
-        this.kdAkun = kdAkun;
+    public void setKdPerkiraan(String kdPerkiraan) {
+        this.kdPerkiraan = kdPerkiraan;
     }
 
     public double getDebet() {

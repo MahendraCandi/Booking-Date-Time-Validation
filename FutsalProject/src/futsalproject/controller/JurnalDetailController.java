@@ -2,8 +2,11 @@ package futsalproject.controller;
 
 import futsalproject.data.JurnalDetail;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 
 public class JurnalDetailController implements Serializable{
     private static final long serialVersionUID = 1L;
@@ -57,5 +60,18 @@ public class JurnalDetailController implements Serializable{
         try{
             return em.find(JurnalDetail.class, kode);
         }finally{}
+    }
+    
+    public List<Object[]> findDetailToListByNoJurnal(String noJurnal){
+        EntityManager em = getEntityManager();
+        List<Object[]> list = new ArrayList<>();
+        try {
+            Query q = em.createQuery("SELECT jd, dp.nmPerkiraan, dp.jenisPerkiraan  FROM JurnalDetail jd, DataPerkiraan dp WHERE jd.kdPerkiraan = dp.kdPerkiraan AND jd.noJurnal = :noJurnal ORDER BY jd.id");
+            q.setParameter("noJurnal", noJurnal);
+            list = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

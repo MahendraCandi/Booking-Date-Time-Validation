@@ -105,6 +105,10 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
             jdcTanggalPakai.setDate(booking.getTglPakai());
             cmbJenisLapangan.setSelectedItem(lapangan.getJenisLap());
             cmbKodeLapangan.setSelectedItem(lapangan.getKdLap());
+            if(booking.getHariLibur() != 0){
+                cekHariLibur.setSelected(true);
+                
+            }
             txtTarif.setText(String.valueOf(lapangan.getTarif()));
             spinJamMasuk.setValue((booking.getJamMasuk()));
             spinJamKeluar.setValue((booking.getJamKeluar()));

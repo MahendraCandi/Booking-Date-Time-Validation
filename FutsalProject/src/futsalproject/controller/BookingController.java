@@ -3,6 +3,7 @@ package futsalproject.controller;
 import futsalproject.data.Booking;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,16 +66,71 @@ public class BookingController implements Serializable{
         }finally{}
     }
     
-    public List<Object[]> findAllBooking(){
+    public List<Object[]> findAllBooking(Date tgl){
         EntityManager em = getEntityManager();
         List<Object[]> listBooking = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String param;
+        if(tgl == null){
+             param = "";
+        }else{
+            param = sdf.format(tgl);
+        }
         try {
             Query q = em.createNativeQuery("SELECT b.kd_booking, b.tgl_booking, b.kd_pelanggan, p.nm_pelanggan, b.kd_lap, b.tgl_pakai, b.jam_masuk, b.jam_keluar FROM booking b\n" +
-                "INNER JOIN pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n" +
+                "INNER JOIN data_pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n"
+                    + "WHERE b.tgl_pakai LIKE ?param");
+            q.setParameter("param", "%" + param + "%");
+            listBooking = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listBooking;
+    }
+    
+    public List<Object[]> findAllBookingNotExistsInPenyewaan(Date tgl){
+        EntityManager em = getEntityManager();
+        List<Object[]> listBooking = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String param;
+        if(tgl == null){
+             param = "";
+        }else{
+            param = sdf.format(tgl) ;
+        }
+        try {
+            Query q = em.createNativeQuery("SELECT b.kd_booking, b.tgl_booking, b.kd_pelanggan, p.nm_pelanggan, b.kd_lap, b.tgl_pakai, b.jam_masuk, b.jam_keluar FROM booking b\n" +
+                "INNER JOIN data_pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n" +
                 "WHERE NOT EXISTS (\n" +
                 "    SELECT * FROM penyewaan p\n" +
                 "    WHERE b.kd_booking = p.kd_booking\n" +
-                ")");
+                ") AND b.tgl_pakai LIKE ?param");
+            q.setParameter("param", "%" + param + "%");
+            listBooking = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listBooking;
+    }
+    
+    public List<Object[]> findAllBookingIsExistInPenyewaan(Date tgl){
+        EntityManager em = getEntityManager();
+        List<Object[]> listBooking = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String param;
+        if(tgl == null){
+             param = "";
+        }else{
+            param = sdf.format(tgl);
+        }
+        try {
+            Query q = em.createNativeQuery("SELECT b.kd_booking, b.tgl_booking, b.kd_pelanggan, p.nm_pelanggan, b.kd_lap, b.tgl_pakai, b.jam_masuk, b.jam_keluar FROM booking b\n" +
+                "INNER JOIN data_pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n" +
+                "WHERE EXISTS (\n" +
+                "    SELECT * FROM penyewaan p\n" +
+                "    WHERE b.kd_booking = p.kd_booking\n" +
+                ") AND b.tgl_pakai LIKE ?param");
+            q.setParameter("param", "%" + param + "%");
             listBooking = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +144,7 @@ public class BookingController implements Serializable{
         try {
             Query q = em.createNativeQuery("SELECT b.kd_booking, b.tgl_booking, b.kd_pelanggan, p.nm_pelanggan, b.kd_lap, b.tgl_pakai, b.jam_masuk, b.jam_keluar\n" +
                 "FROM booking b\n" +
-                "INNER JOIN pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n" +
+                "INNER JOIN data_pelanggan p ON b.kd_pelanggan = p.kd_pelanggan\n" +
                 "WHERE b.kd_booking LIKE ?cari\n" +
                 "OR b.kd_pelanggan LIKE ?cari\n" +
                 "OR p.nm_pelanggan LIKE ?cari\n" +

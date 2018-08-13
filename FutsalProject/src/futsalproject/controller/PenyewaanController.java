@@ -69,7 +69,7 @@ public class PenyewaanController implements Serializable{
         EntityManager em = getEntityManager();
         List<Object[]> listPenyewaan = new ArrayList<>();
         try {
-            Query q = em.createQuery("SELECT p, pel.nmPelanggan FROM Penyewaan p, Pelanggan pel WHERE p.kdPelanggan = pel.kdPelanggan");
+            Query q = em.createQuery("SELECT p, pel.nmPelanggan FROM Penyewaan p, DataPelanggan pel WHERE p.kdPelanggan = pel.kdPelanggan");
             listPenyewaan = q.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,7 +82,7 @@ public class PenyewaanController implements Serializable{
         List<Object[]> listBooking = new ArrayList<>();
         try {
             Query q = em.createNativeQuery("SELECT p.no_trans, p.tgl_sewa, p.kd_booking, p.kd_pelanggan, pel.nm_pelanggan, p.jam_sewa_masuk, p.jam_sewa_keluar, p.total_sewa, p.uang_byr FROM penyewaan p \n" +
-                "INNER JOIN pelanggan pel ON p.kd_pelanggan = pel.kd_pelanggan\n" +
+                "INNER JOIN data_pelanggan pel ON p.kd_pelanggan = pel.kd_pelanggan\n" +
                 "WHERE p.no_trans LIKE ?cari\n" +
                 "OR p.kd_booking LIKE ?cari\n" +
                 "OR p.kd_pelanggan LIKE ?cari\n" +

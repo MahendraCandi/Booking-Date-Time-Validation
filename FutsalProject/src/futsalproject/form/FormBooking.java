@@ -41,39 +41,59 @@ public class FormBooking extends javax.swing.JInternalFrame {
         model.addColumn("Jam Masuk");
         model.addColumn("Jam Keluar");
         tableBooking.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
-        showTable();
+        showTableNotExistInPenyewaan(null);
         renderTableTgl();
         renderTableJam();
         userLogin = user;
     }
     
-    private void showTable(){
+    private void showTableNotExistInPenyewaan(Date tgl){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        List<Object[]> list = bCont.findAllBooking();
+        List<Object[]> list = bCont.findAllBookingNotExistsInPenyewaan(tgl);
         for(Object[] obj : list){
             model.addRow(obj);
         }
         tableBooking.setModel(model);
     }
     
-    private void cariTable(String cari){
-        List<Object[]> listUser = bCont.searchBooking(cari);
-        if(listUser.size() == 0){
-            JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
-        }else{
-            if(cari.isEmpty()){
-                showTable();
-            }else{
-                model.getDataVector().removeAllElements();
-                model.fireTableDataChanged();
-                for(Object[] obj : listUser){
-                model.addRow(obj);
-            }
-            tableBooking.setModel(model);
-            }
+    private void showTableExistInPenyewaan(Date tgl){
+        model.getDataVector().removeAllElements();
+        model.fireTableDataChanged();
+        List<Object[]> list = bCont.findAllBookingIsExistInPenyewaan(tgl);
+        for(Object[] obj : list){
+            model.addRow(obj);
         }
+        tableBooking.setModel(model);
     }
+    
+    private void showTableAllBooking(Date tgl){
+        model.getDataVector().removeAllElements();
+        model.fireTableDataChanged();
+        List<Object[]> list = bCont.findAllBooking(tgl);
+        for(Object[] obj : list){
+            model.addRow(obj);
+        }
+        tableBooking.setModel(model);
+    }
+    
+//    private void cariTable(String cari){
+//        List<Object[]> listUser = bCont.searchBooking(cari);
+//        if(listUser.size() == 0){
+//            JOptionPane.showMessageDialog(null, "Data tidak ditemukan!");
+//        }else{
+//            if(cari.isEmpty()){
+//                showTableNotExistInPenyewaan(null);
+//            }else{
+//                model.getDataVector().removeAllElements();
+//                model.fireTableDataChanged();
+//                for(Object[] obj : listUser){
+//                model.addRow(obj);
+//            }
+//            tableBooking.setModel(model);
+//            }
+//        }
+//    }
     
     private void renderTableTgl(){
         TableCellRenderer tbr = new DefaultTableCellRenderer(){
@@ -122,10 +142,13 @@ public class FormBooking extends javax.swing.JInternalFrame {
         btnDetail = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        txtCari = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableBooking = new javax.swing.JTable();
+        cmbTampil = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jdcTanggal = new com.toedter.calendar.JDateChooser();
+        btnCari = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
@@ -159,17 +182,10 @@ public class FormBooking extends javax.swing.JInternalFrame {
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
-        txtCari.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtCariKeyPressed(evt);
-            }
-        });
-
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel6.setText("Cari");
+        jLabel6.setText("Tampilkan:");
 
         tableBooking.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -180,6 +196,29 @@ public class FormBooking extends javax.swing.JInternalFrame {
             }
         ));
         jScrollPane1.setViewportView(tableBooking);
+
+        cmbTampil.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbTampil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DP belum lunas", "Sudah lunas", "Semua booking" }));
+        cmbTampil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbTampilActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel7.setText("Tanggal Pakai:");
+
+        jdcTanggal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        btnCari.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Search_20px.png"))); // NOI18N
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -195,8 +234,14 @@ public class FormBooking extends javax.swing.JInternalFrame {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbTampil, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jdcTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -207,12 +252,20 @@ public class FormBooking extends javax.swing.JInternalFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel6)
-                        .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jdcTanggal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel6)
+                                .addComponent(cmbTampil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel7)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCari)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -229,12 +282,6 @@ public class FormBooking extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            cariTable(txtCari.getText());
-        }
-    }//GEN-LAST:event_txtCariKeyPressed
 
     private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
         int baris = tableBooking.getSelectedRow();
@@ -260,17 +307,42 @@ public class FormBooking extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_btnTambahActionPerformed
 
+    private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
+        String filter = cmbTampil.getSelectedItem().toString();
+        if(filter.equalsIgnoreCase("DP belum lunas")){
+            showTableNotExistInPenyewaan(jdcTanggal.getDate());
+        }else if(filter.equalsIgnoreCase("Sudah lunas")){
+            showTableExistInPenyewaan(jdcTanggal.getDate());
+        }else if(filter.equalsIgnoreCase("Semua booking")){
+            showTableAllBooking(jdcTanggal.getDate());
+        }
+    }//GEN-LAST:event_btnCariActionPerformed
+
+    private void cmbTampilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTampilActionPerformed
+        String filter = cmbTampil.getSelectedItem().toString();
+        if(filter.equalsIgnoreCase("DP belum lunas")){
+            showTableNotExistInPenyewaan(null);
+        }else if(filter.equalsIgnoreCase("Sudah lunas")){
+            showTableExistInPenyewaan(null);
+        }else if(filter.equalsIgnoreCase("Semua booking")){
+            showTableAllBooking(null);
+        }
+    }//GEN-LAST:event_cmbTampilActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCari;
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnTambah;
+    private javax.swing.JComboBox<String> cmbTampil;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private com.toedter.calendar.JDateChooser jdcTanggal;
     private javax.swing.JTable tableBooking;
-    private javax.swing.JTextField txtCari;
     // End of variables declaration//GEN-END:variables
 }

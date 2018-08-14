@@ -75,6 +75,9 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         
     }
     
+    /*
+        Melakukan validasi
+    */
     private void validasiBooking(){
         if(booking == null){
             txtKodeBooking.setText(bCont.kodeOtomatis());

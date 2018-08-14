@@ -4,6 +4,7 @@ import futsalproject.FutsalProject;
 import futsalproject.controller.BookingController;
 import futsalproject.controller.DataLapanganController;
 import futsalproject.controller.DataPelangganController;
+import futsalproject.controller.LaporanController;
 import futsalproject.controller.PenyewaanController;
 import futsalproject.data.Booking;
 import futsalproject.data.DataLapangan;
@@ -30,8 +31,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class FormBookingTambah extends javax.swing.JInternalFrame {
 
-    // TAMPIL BOOKING DETAIL DENGAN CHECK HARI LIBUR
-    
     Booking booking = new Booking();
     DataUser userLogin = new DataUser();
     DataPelanggan pelanggan = new DataPelanggan();
@@ -41,6 +40,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     DataPelangganController pCont = new DataPelangganController(FutsalProject.emf);
     DataLapanganController lCont = new DataLapanganController(FutsalProject.emf);
     PenyewaanController sewaController = new PenyewaanController(FutsalProject.emf);
+    LaporanController lapCont = new LaporanController(FutsalProject.emf);
     DefaultTableModel model;
     
     SimpleDateFormat sdf=new SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("in-ID"));
@@ -88,6 +88,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
             comboBoxJenisLapangan();
             comboBoxKodeLapangan();
             aktif();
+            btnCetak.setVisible(false);    
         }else{
             pelanggan = pCont.findOneDataPelanggan(booking.getKdPelanggan());
             lapangan = lCont.findOneDataLapangan(booking.getKdLap());
@@ -114,7 +115,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
             spinJamKeluar.setValue((booking.getJamKeluar()));
             txtUangDP.setText(String.valueOf(booking.getUangDp()));
             hitung();
-            
+            btnCetak.setVisible(true);
         }
     }
 
@@ -420,6 +421,7 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         jLabel20 = new javax.swing.JLabel();
         cekHariLibur = new javax.swing.JCheckBox();
         txtDiskon = new javax.swing.JTextField();
+        btnCetak = new javax.swing.JButton();
 
         DialogPelanggan.setTitle("Cari Pelanggan");
         DialogPelanggan.setAlwaysOnTop(true);
@@ -1109,6 +1111,15 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
 
         jScrollPane4.setViewportView(jPanel4);
 
+        btnCetak.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnCetak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-print-20.png"))); // NOI18N
+        btnCetak.setText("Cetak");
+        btnCetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1120,7 +1131,8 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
                     .addComponent(jSeparator1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCetak)))
                 .addContainerGap())
             .addComponent(jScrollPane4)
         );
@@ -1131,7 +1143,9 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCetak))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE))
         );
@@ -1277,10 +1291,15 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         hitung();
     }//GEN-LAST:event_cekHariLiburActionPerformed
 
+    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
+        lapCont.cetakBooking(txtKodeBooking.getText(), hargaSore, hargaMalam, totalTarif);
+    }//GEN-LAST:event_btnCetakActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog DialogPelanggan;
     private javax.swing.JButton btnCariPelanggan;
+    private javax.swing.JButton btnCetak;
     private javax.swing.JButton btnKembali;
     private javax.swing.JButton btnPilihPelanggan;
     private javax.swing.JButton btnSimpan;
@@ -1427,7 +1446,9 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
                 booking.setHariLibur(Double.parseDouble(txtHariLibur.getText()));
                 bCont.save(booking);
                 JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
-                
+                if(JOptionPane.showConfirmDialog(null, "Cetak PO?", "Konfirmasi", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+                        btnCetakActionPerformed(null);
+                }
                 FormBooking fb = new FormBooking(userLogin);
                 JDesktopPane desktopPane = getDesktopPane();
                 desktopPane.add(fb);

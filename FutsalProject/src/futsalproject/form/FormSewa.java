@@ -4,6 +4,7 @@ import futsalproject.FutsalProject;
 import futsalproject.controller.BookingController;
 import futsalproject.controller.DataLapanganController;
 import futsalproject.controller.DataPelangganController;
+import futsalproject.controller.LaporanController;
 import futsalproject.controller.PenyewaanController;
 import futsalproject.data.Booking;
 import futsalproject.data.DataLapangan;
@@ -30,6 +31,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
     PenyewaanController sewaCont = new PenyewaanController(FutsalProject.emf);
     DataPelangganController pCont = new DataPelangganController(FutsalProject.emf);
     DataLapanganController lCont = new DataLapanganController(FutsalProject.emf);
+    LaporanController lapCont = new LaporanController(FutsalProject.emf);
     SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"));
     DateFormat df = new SimpleDateFormat("HH:mm");
     
@@ -80,6 +82,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
             txtNoTrans.setText(sewaCont.kodeOtomatis());
             txtTglSewa.setText(sdf.format(new Date()));
             cmbKodeBooking.setEnabled(true);
+            btnCetak.setVisible(false);
         }else{
             txtNoTrans.setText(penyewaan.getNoTrans());
             txtTglSewa.setText(sdf.format(penyewaan.getTglSewa()));
@@ -248,6 +251,10 @@ public class FormSewa extends javax.swing.JInternalFrame {
                     penyewaan.setUangByr(Double.parseDouble(txtUangBayar.getText()));
                     sewaCont.save(penyewaan);
                     JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
+                    if(JOptionPane.showConfirmDialog(null, "Cetak PO?", "Konfirmasi", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+                            btnCetakActionPerformed(null);
+                    }
+                    JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
                     btnKembaliActionPerformed(null);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -311,6 +318,7 @@ public class FormSewa extends javax.swing.JInternalFrame {
         jLabel14 = new javax.swing.JLabel();
         txtTotalSewa = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        btnCetak = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
@@ -654,6 +662,15 @@ public class FormSewa extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        btnCetak.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnCetak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-print-20.png"))); // NOI18N
+        btnCetak.setText("Cetak");
+        btnCetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -675,7 +692,9 @@ public class FormSewa extends javax.swing.JInternalFrame {
                         .addGap(66, 66, 66))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCetak)
+                        .addGap(47, 47, 47)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -685,7 +704,9 @@ public class FormSewa extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCetak))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -743,8 +764,13 @@ public class FormSewa extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtUangBayarKeyPressed
 
+    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
+        lapCont.cetakPenyewaan(txtNoTrans.getText(), hargaSore, hargaMalam);
+    }//GEN-LAST:event_btnCetakActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCetak;
     private javax.swing.JButton btnKembali;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JComboBox<String> cmbKodeBooking;

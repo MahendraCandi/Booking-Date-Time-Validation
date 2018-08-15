@@ -49,4 +49,29 @@ public class LaporanController implements Serializable{
             em.close();
         }
     }
+    
+    public void cetakPenyewaan(String noTrans, double tarifMalam, double tarifSore){
+        EntityManager em = null;
+        try{
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+            Connection connect=em.unwrap(Connection.class);
+            HashMap param = new HashMap();
+            Locale local=new Locale("id", "ID");
+            param.put(JRParameter.REPORT_LOCALE, local);
+            param.put("noTrans", noTrans);
+            param.put("tarif_malam", tarifMalam);
+            param.put("tarif_sore", tarifSore);
+            JasperPrint jprint=JasperFillManager.fillReport ( getClass().getResourceAsStream("/report/KwitansiPenyewaan.jasper"), param, connect);
+            JasperViewer viewer=new JasperViewer(jprint, false);
+            viewer.setFitPageZoomRatio();
+            viewer.setVisible(true);
+            connect.close();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Ups ada kesalahan! " + e.getMessage());
+            e.printStackTrace();
+        }finally{
+            em.close();
+        }
+    }
 }

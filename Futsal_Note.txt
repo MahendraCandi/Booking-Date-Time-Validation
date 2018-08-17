@@ -34,3 +34,13 @@ Jam Masuk	Object	true	true
 Jam Keluar	Object	true	true
 Total Sewa	Object	true	true
 Uang bayar
+
+================================
+
+bugs : kodeOtomatis User
+jenisPerkiraan : Aktiva, Modal, Beban, Hutang, Pendapatan.
+bugs : tombol simpan di lihat detail penyewaan
+gui : tombol tambah data, harusnya didalam panel
+ubah : tanda transaksi -> jadi tanda lunas
+joption pane : cetak po -> ubah jadi cetak kwitansi
+tambah feature : update tgl booking

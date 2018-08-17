@@ -163,7 +163,7 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
         jLabel3.setText("Jenis Perkiraan");
 
         cmbJenis.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbJenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aktiva  Lancar ", "Aktiva Tetap", "Hutang Jangka Pendek", "Hutang Jangka Panjang", "Modal", "Pendapatan", "Beban" }));
+        cmbJenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aktiva", "Modal", "Beban", "Hutang", "Pendapatan" }));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));

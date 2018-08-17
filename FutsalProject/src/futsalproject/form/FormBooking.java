@@ -24,6 +24,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
     Booking booking = new Booking();
     BookingController bCont = new BookingController(FutsalProject.emf);
     DefaultTableModel model;
+    boolean update;
     /**
      * Creates new form FormBooking
      */
@@ -45,6 +46,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
         renderTableTgl();
         renderTableJam();
         userLogin = user;
+        
     }
     
     private void showTableNotExistInPenyewaan(Date tgl){
@@ -139,6 +141,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         btnTambah = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -164,6 +167,16 @@ public class FormBooking extends javax.swing.JInternalFrame {
             }
         });
         jPanel2.add(btnTambah);
+
+        btnUpdate.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Edit File_20px.png"))); // NOI18N
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnUpdate);
 
         btnDetail.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnDetail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Check File_20px_5.png"))); // NOI18N
@@ -289,7 +302,8 @@ public class FormBooking extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Pilih data yang mau dilihat!");
         }else{
             booking = bCont.findOneBooking(tableBooking.getValueAt(baris, 0).toString());
-            FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
+            update = false;
+            FormBookingTambah fbt = new FormBookingTambah(userLogin, booking, update);
             JDesktopPane desktopPane = getDesktopPane();
             desktopPane.add(fbt);
             fbt.setVisible(true);
@@ -300,7 +314,8 @@ public class FormBooking extends javax.swing.JInternalFrame {
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         booking = null;
-        FormBookingTambah fbt = new FormBookingTambah(userLogin, booking);
+        update = false;
+        FormBookingTambah fbt = new FormBookingTambah(userLogin, booking, update);
         JDesktopPane desktopPane = getDesktopPane();
         desktopPane.add(fbt);
         fbt.setVisible(true);
@@ -329,11 +344,33 @@ public class FormBooking extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_cmbTampilActionPerformed
 
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        int baris = tableBooking.getSelectedRow();
+        if(baris == -1){
+            JOptionPane.showMessageDialog(null, "Pilih data yang mau dilihat!");
+        }else{
+            booking = bCont.findOneBookingIsExistInPenyewaan(tableBooking.getValueAt(baris, 0).toString());
+            if(booking == null){
+                booking = bCont.findOneBooking(tableBooking.getValueAt(baris, 0).toString());
+                update = true;
+                FormBookingTambah fbt = new FormBookingTambah(userLogin, booking, update);
+                JDesktopPane desktopPane = getDesktopPane();
+                desktopPane.add(fbt);
+                fbt.setVisible(true);
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "Update tidak berlaku, booking ini telah lunas!");
+            }
+            
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCari;
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnTambah;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cmbTampil;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

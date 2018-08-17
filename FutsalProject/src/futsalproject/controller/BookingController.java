@@ -42,7 +42,9 @@ public class BookingController implements Serializable{
             em.getTransaction().begin();
             em.merge(booking);
             em.getTransaction().commit();
-        }catch(Exception ex){}
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
     
     public void delete(String pk){
@@ -136,6 +138,19 @@ public class BookingController implements Serializable{
             e.printStackTrace();
         }
         return listBooking;
+    }
+    
+    public Booking findOneBookingIsExistInPenyewaan(String kdBooking){
+        EntityManager em = getEntityManager();
+        Booking booking;
+        try {
+            Query q = em.createQuery("SELECT b FROM Booking b WHERE EXISTS ( SELECT p.kdBooking FROM Penyewaan p WHERE b.kdBooking = p.kdBooking AND b.kdBooking = :kdBooking )");
+            q.setParameter("kdBooking", kdBooking);
+            booking = (Booking) q.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+        return booking;
     }
     
     public List<Object[]> searchBooking(String cari){

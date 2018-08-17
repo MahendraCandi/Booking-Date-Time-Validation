@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="KwitansiPenyewaan" language="groovy" pageWidth="481" pageHeight="283" columnWidth="441" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="88d4bc31-3b15-46fd-9290-ace8f4f5e10b">
 	<property name="ireport.zoom" value="2.143588810000002"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="111"/>
+	<property name="ireport.y" value="96"/>
 	<parameter name="noTrans" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -135,7 +135,7 @@ Kembangan, Jakarta Barat. Telp (021) 589 06 441]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Segoe UI" size="18" isBold="true" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[TANDA TRANSAKSI]]></text>
+				<text><![CDATA[TANDA LUNAS]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="55" width="441" height="1" uuid="9698d600-b1a4-40a0-a252-faf7b7ba1c9f"/>

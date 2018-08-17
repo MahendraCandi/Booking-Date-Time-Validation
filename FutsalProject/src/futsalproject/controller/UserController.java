@@ -91,14 +91,14 @@ public class UserController implements Serializable{
     
     public String kodeOtomatis(){
         EntityManager em=null;
-        String kode="DataUser-001";
+        String kode="User-001";
         try{
             em=getEntityManager();
             Query q=em.createQuery("SELECT u FROM DataUser u ORDER BY u.kdUser DESC");
             q.setMaxResults(1);
             DataUser user=(DataUser) q.getSingleResult();
             if(q!=null){
-                DecimalFormat formatnomor = new DecimalFormat("DataUser-000");
+                DecimalFormat formatnomor = new DecimalFormat("User-000");
                 String nomorurut = user.getKdUser().substring(5);
                 kode=formatnomor.format(Double.parseDouble(nomorurut)+1);
             }

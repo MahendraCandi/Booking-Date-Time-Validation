@@ -77,6 +77,14 @@ public class FormLogin extends javax.swing.JFrame {
                     FormUtama formUtama = new FormUtama(userLogin);
                     
                     JOptionPane.showMessageDialog(this, "Selamat datang, "+nama+"","Welcome", JOptionPane.INFORMATION_MESSAGE);
+                    if(hakAkses.equalsIgnoreCase("Pemilik")){
+                        formUtama.getMenuTransaksi().setVisible(false);
+                        formUtama.getMenuAkun().setVisible(false);
+                        formUtama.getMenuLapangan().setVisible(false);
+                        formUtama.getMenuPelanggan().setVisible(false);
+                    }else if(hakAkses.equalsIgnoreCase("Kasir")){
+                        formUtama.getMenuUser().setVisible(false);
+                    }
                     this.dispose();
                     formUtama.setVisible(true);
                 }else{

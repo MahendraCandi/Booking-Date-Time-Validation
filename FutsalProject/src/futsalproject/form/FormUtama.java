@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.JMenuItem;
 import javax.swing.plaf.basic.BasicMenuBarUI;
 
 public class FormUtama extends javax.swing.JFrame {
@@ -30,6 +31,7 @@ public class FormUtama extends javax.swing.JFrame {
         });
         txtKodeUser.setText("Kode User : " + user.getKdUser());
         txtNamaUser.setText("Nama : " + user.getNmUser());
+        txtHakAkses.setText("Akses : " + user.getHakAkses());
         userLogin = user;
     }
 
@@ -47,6 +49,7 @@ public class FormUtama extends javax.swing.JFrame {
         txtNamaUser = new javax.swing.JLabel();
         txtKodeUser = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        txtHakAkses = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMaster = new javax.swing.JMenu();
         MenuPelanggan = new javax.swing.JMenuItem();
@@ -93,6 +96,9 @@ public class FormUtama extends javax.swing.JFrame {
 
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
+        txtHakAkses.setForeground(new java.awt.Color(255, 255, 255));
+        txtHakAkses.setText("txtHakAkses");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -106,6 +112,8 @@ public class FormUtama extends javax.swing.JFrame {
                         .addComponent(txtKodeUser)
                         .addGap(18, 18, 18)
                         .addComponent(txtNamaUser)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtHakAkses)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -115,7 +123,8 @@ public class FormUtama extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtKodeUser)
-                    .addComponent(txtNamaUser))
+                    .addComponent(txtNamaUser)
+                    .addComponent(txtHakAkses))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -193,7 +202,9 @@ public class FormUtama extends javax.swing.JFrame {
         });
         MenuTransaksi.add(MenuSewa);
 
+        MenuJurnal.setBackground(new java.awt.Color(255, 255, 255));
         MenuJurnal.setText("Jurnal");
+        MenuJurnal.setOpaque(true);
         MenuJurnal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MenuJurnalActionPerformed(evt);
@@ -336,6 +347,7 @@ public class FormUtama extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JMenu menuMaster;
+    private javax.swing.JLabel txtHakAkses;
     private javax.swing.JLabel txtKodeUser;
     private javax.swing.JLabel txtNamaUser;
     // End of variables declaration//GEN-END:variables
@@ -350,5 +362,53 @@ public class FormUtama extends javax.swing.JFrame {
             jf.setSelected(true);
         } catch (Exception e) {
         }
+    }
+
+    public javax.swing.JMenuItem getMenuAkun() {
+        return MenuAkun;
+    }
+
+    public void setMenuAkun(javax.swing.JMenuItem MenuAkun) {
+        this.MenuAkun = MenuAkun;
+    }
+
+    public javax.swing.JMenuItem getMenuJurnal() {
+        return MenuJurnal;
+    }
+
+    public JMenuItem getMenuPelanggan() {
+        return MenuPelanggan;
+    }
+
+    public void setMenuPelanggan(JMenuItem MenuPelanggan) {
+        this.MenuPelanggan = MenuPelanggan;
+    }
+
+    public void setMenuJurnal(javax.swing.JMenuItem MenuJurnal) {
+        this.MenuJurnal = MenuJurnal;
+    }
+
+    public javax.swing.JMenuItem getMenuLapangan() {
+        return MenuLapangan;
+    }
+
+    public void setMenuLapangan(javax.swing.JMenuItem MenuLapangan) {
+        this.MenuLapangan = MenuLapangan;
+    }
+
+    public javax.swing.JMenu getMenuTransaksi() {
+        return MenuTransaksi;
+    }
+
+    public void setMenuTransaksi(javax.swing.JMenu MenuTransaksi) {
+        this.MenuTransaksi = MenuTransaksi;
+    }
+
+    public javax.swing.JMenuItem getMenuUser() {
+        return MenuUser;
+    }
+
+    public void setMenuUser(javax.swing.JMenuItem MenuUser) {
+        this.MenuUser = MenuUser;
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="KwitansiBooking" language="groovy" pageWidth="481" pageHeight="283" columnWidth="441" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6f00b4a9-8612-4ed3-818f-d0e52e73ff89">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="KwitansiBooking" language="groovy" pageWidth="481" pageHeight="340" columnWidth="441" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6f00b4a9-8612-4ed3-818f-d0e52e73ff89">
 	<property name="ireport.zoom" value="1.948717100000011"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="42"/>
+	<property name="ireport.y" value="157"/>
 	<parameter name="tarif_sore" class="java.lang.Double">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -183,7 +183,7 @@ Kembangan, Jakarta Barat. Telp (021) 589 06 441]]></text>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="124" splitType="Stretch">
+		<band height="115" splitType="Stretch">
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="441" height="15" forecolor="#FFFFFF" backcolor="#00B894" uuid="e9abbfbe-eb43-441f-9a9e-025d23a35683"/>
 				<textElement verticalAlignment="Middle">
@@ -394,8 +394,26 @@ Kembangan, Jakarta Barat. Telp (021) 589 06 441]]></text>
 			</textField>
 		</band>
 	</detail>
+	<columnFooter>
+		<band height="72">
+			<staticText>
+				<reportElement x="32" y="0" width="53" height="15" forecolor="#000000" uuid="2947e734-82b1-498e-8e06-fd191c575237"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Segoe UI" size="8" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Hormat Kami,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="32" y="40" width="53" height="15" forecolor="#000000" uuid="e905feed-4952-4b11-b2b0-132078e9b1bb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Segoe UI" size="8" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[(	)]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
 	<pageFooter>
-		<band height="9" splitType="Stretch">
+		<band height="5" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="441" height="1" uuid="78f6fca7-7a5d-4e65-b357-f0c3dd3451f3"/>
 				<graphicElement>

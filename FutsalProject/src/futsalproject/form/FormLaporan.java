@@ -1,8 +1,10 @@
 package futsalproject.form;
 
 import futsalproject.FutsalProject;
+import futsalproject.controller.JurnalController;
 import futsalproject.controller.LaporanController;
 import futsalproject.controller.PenyewaanController;
+import futsalproject.data.Jurnal;
 import java.awt.Component;
 import java.awt.Font;
 import java.text.DecimalFormat;
@@ -19,6 +21,7 @@ import javax.swing.table.TableCellRenderer;
 public class FormLaporan extends javax.swing.JInternalFrame {
 
     PenyewaanController pCont = new PenyewaanController(FutsalProject.emf);
+    JurnalController jCont = new JurnalController(FutsalProject.emf);
     LaporanController lapCont = new LaporanController(FutsalProject.emf);
     DefaultTableModel pModel, kasModel;
     String tampil;
@@ -45,6 +48,8 @@ public class FormLaporan extends javax.swing.JInternalFrame {
             renderTableTglPenyewaan();
             renderTableHargaPenyewaan();
             renderTableJamPenyewaan();
+        }else if(tampil.equalsIgnoreCase("Laporan Kas")){
+            
         }
     }
     
@@ -144,6 +149,38 @@ public class FormLaporan extends javax.swing.JInternalFrame {
         jdcTglAwalSewa.setDateFormatString("dd MMMM yyyy");
         jdcTglAkhirSewa.setDateFormatString("dd MMMM yyyy");
     }
+    
+    /*
+        Panel Kas
+    */
+    
+    private void tableKas(){
+        kasModel=new DefaultTableModel();
+        kasModel.addColumn("No.Jurnal");
+        kasModel.addColumn("Tgl. Jurnal");
+        kasModel.addColumn("No. Transaksi");
+        kasModel.addColumn("Total Transaksi");
+        tableKas.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        
+    }
+    
+    private void showTableKas(){
+        kasModel.getDataVector().removeAllElements();
+        kasModel.fireTableDataChanged();
+        List<Object[]> listKas = jCont.findAllJurnalAndTotalSewaByDate(jdcTglAwalKas.getDate(), jdcTglAkhirKas.getDate());
+        for(Object[] item : listKas){
+            Object[] obj = new Object[4];
+            Jurnal j = (Jurnal) item[0];
+            obj[0] = j.getNoJurnal();
+            obj[1] = (Date) j.getTglJurnal();
+            obj[2] =  j.getNoTrans();
+            obj[3] = item[1];
+            kasModel.addRow(obj);
+        }
+        tableKas.setModel(kasModel);
+    }
+    
+    // BUAT METHOD JURNAL PENGELUARAN KAS!
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -166,6 +203,20 @@ public class FormLaporan extends javax.swing.JInternalFrame {
         jdcTglAkhirSewa = new com.toedter.calendar.JDateChooser();
         btnTampilSewa = new javax.swing.JButton();
         btnCetakSewa = new javax.swing.JButton();
+        panelKas = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableKas = new javax.swing.JTable();
+        jdcTglAwalKas = new com.toedter.calendar.JDateChooser();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jdcTglAkhirKas = new com.toedter.calendar.JDateChooser();
+        btnTampilKas = new javax.swing.JButton();
+        btnCetakKas = new javax.swing.JButton();
+
+        getContentPane().setLayout(new java.awt.CardLayout());
 
         panelPenyewaan.setBackground(new java.awt.Color(0, 184, 148));
 
@@ -188,6 +239,11 @@ public class FormLaporan extends javax.swing.JInternalFrame {
             }
         ));
         jScrollPane1.setViewportView(tablePenyewaan);
+        if (tablePenyewaan.getColumnModel().getColumnCount() > 0) {
+            tablePenyewaan.getColumnModel().getColumn(0).setHeaderValue("Kode Lapangan");
+            tablePenyewaan.getColumnModel().getColumn(1).setHeaderValue("Jenis Lapangan");
+            tablePenyewaan.getColumnModel().getColumn(2).setHeaderValue("Tarif");
+        }
 
         jdcTglAwalSewa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
@@ -267,16 +323,114 @@ public class FormLaporan extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPenyewaan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        getContentPane().add(panelPenyewaan, "card2");
+
+        panelKas.setBackground(new java.awt.Color(0, 184, 148));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Form Laporan Pengeluaran Kas");
+
+        jSeparator2.setForeground(new java.awt.Color(255, 255, 255));
+
+        tableKas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(tableKas);
+
+        jdcTglAwalKas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Tanggal Awal");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Tanggal Akhir");
+
+        jdcTglAkhirKas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        btnTampilKas.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnTampilKas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Search_20px.png"))); // NOI18N
+        btnTampilKas.setText("Tampil");
+        btnTampilKas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTampilKasActionPerformed(evt);
+            }
+        });
+
+        btnCetakKas.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnCetakKas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-print-20.png"))); // NOI18N
+        btnCetakKas.setText("Cetak Laporan");
+        btnCetakKas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakKasActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelKasLayout = new javax.swing.GroupLayout(panelKas);
+        panelKas.setLayout(panelKasLayout);
+        panelKasLayout.setHorizontalGroup(
+            panelKasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelKasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelKasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator2)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelKasLayout.createSequentialGroup()
+                        .addGroup(panelKasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelKasLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jdcTglAwalKas, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jdcTglAkhirKas, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnTampilKas)
+                                .addGap(0, 0, 0)
+                                .addComponent(btnCetakKas)
+                                .addGap(0, 129, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPenyewaan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        panelKasLayout.setVerticalGroup(
+            panelKasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelKasLayout.createSequentialGroup()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelKasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelKasLayout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                        .addGap(467, 467, 467))
+                    .addGroup(panelKasLayout.createSequentialGroup()
+                        .addGroup(panelKasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jdcTglAwalKas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jdcTglAkhirKas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnTampilKas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCetakKas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())))
         );
+
+        getContentPane().add(panelKas, "card3");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -302,19 +456,39 @@ public class FormLaporan extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnCetakSewaActionPerformed
 
+    private void btnTampilKasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTampilKasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTampilKasActionPerformed
+
+    private void btnCetakKasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakKasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCetakKasActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCetakKas;
     private javax.swing.JButton btnCetakSewa;
+    private javax.swing.JButton btnTampilKas;
     private javax.swing.JButton btnTampilSewa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private com.toedter.calendar.JDateChooser jdcTglAkhirKas;
     private com.toedter.calendar.JDateChooser jdcTglAkhirSewa;
+    private com.toedter.calendar.JDateChooser jdcTglAwalKas;
     private com.toedter.calendar.JDateChooser jdcTglAwalSewa;
+    private javax.swing.JPanel panelKas;
     private javax.swing.JPanel panelPenyewaan;
+    private javax.swing.JTable tableKas;
     private javax.swing.JTable tablePenyewaan;
     // End of variables declaration//GEN-END:variables
 }

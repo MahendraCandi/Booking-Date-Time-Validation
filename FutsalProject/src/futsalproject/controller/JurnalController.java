@@ -4,6 +4,7 @@ import futsalproject.data.Jurnal;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -87,6 +88,37 @@ public class JurnalController implements Serializable{
             e.printStackTrace();
         }
         return list;
+    }
+    
+    public List<Object[]> findAllJurnalAndTotalSewaByDate(Date tgl1, Date tgl2){
+        EntityManager em = getEntityManager();
+        List<Object[]> list = new ArrayList<>();
+        try {
+            Query q=em.createQuery("SELECT j, p.totalSewa FROM Jurnal j, Penyewaan p WHERE j.noTrans = p.noTrans AND (j.tglJurnal BETWEEN :tgl1 AND :tgl2)");
+            q.setParameter("tgl1", tgl1);
+            q.setParameter("tgl2", tgl2);
+            list = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public Object[] firstDateLasDate(){
+        EntityManager em = getEntityManager();
+        Object[] obj=new Object[2];
+        try {
+            Query q=em.createQuery("SELECT MIN(j.tglJurnal), MAX(j.tglJurnal) FROM Jurnal j");
+            List<Object[]> list = q.getResultList();
+            for(Object[] o : list){
+                obj[0] = o[0];
+                obj[1] = o[1];
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return obj;
     }
     
     public String nomorOtomatis(){

@@ -123,6 +123,53 @@ public class PenyewaanController implements Serializable{
         return listBooking;
     }
     
+    public List<Object[]> findAllPenyewaanFormLaporan(Date tglAwal, Date tglAkhir){
+        EntityManager em = getEntityManager();
+        List<Object[]> listPenyewaan = new ArrayList<>();
+        try {
+            Query q = em.createNativeQuery("SELECT\n" +
+                "p.no_trans,\n" +
+                "p.tgl_sewa,\n" +
+                "dp.nm_pelanggan,\n" +
+                "p.kd_lap,\n" +
+                "dl.jenis_lap,\n" +
+                "p.jam_sewa_masuk,\n" +
+                "p.jam_sewa_keluar,\n" +
+                "p.lama_sewa,\n" +
+                "p.hari_libur,\n" +
+                "p.diskon_sewa,\n" +
+                "p.total_sewa,\n" +
+                "du.nm_user\n" +
+                "FROM penyewaan p\n" +
+                "INNER JOIN data_lapangan dl ON p.kd_lap = dl.kd_lap\n" +
+                "INNER JOIN data_pelanggan dp ON p.kd_pelanggan = dp.kd_pelanggan\n" +
+                "INNER JOIN data_user du ON p.kd_user = du.kd_user\n" +
+                "WHERE p.tgl_sewa BETWEEN ?tglAwal AND ?tglAkhir");
+            q.setParameter("tglAwal", tglAwal);
+            q.setParameter("tglAkhir", tglAkhir);
+            listPenyewaan = q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listPenyewaan;
+    }
+    
+    public Object[] firstDateLastDate(){
+        EntityManager em=getEntityManager();
+        Object[] obj=new Object[2];
+        try{
+            Query q = em.createQuery("SELECT MIN(p.tglSewa) AS MinTgl, MAX(p.tglSewa) AS MaxTgl FROM Penyewaan p");
+            List<Object[]> list = q.getResultList();
+            for(Object[] o : list){
+                obj[0] = o[0];
+                obj[1] = o[1];
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return obj;
+    }
+    
     public String kodeOtomatis(){
         EntityManager em=null;
         String kode="Trans-001";

@@ -63,6 +63,8 @@ public class FormUtama extends javax.swing.JFrame {
         MenuLaporan = new javax.swing.JMenu();
         MenuLapPenyewaan = new javax.swing.JMenuItem();
         MenuLapKas = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        MenuBackupDb = new javax.swing.JMenuItem();
         MenuLogout = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -238,6 +240,18 @@ public class FormUtama extends javax.swing.JFrame {
 
         jMenuBar1.add(MenuLaporan);
 
+        jMenu1.setText("Utility");
+
+        MenuBackupDb.setText("Backup Database");
+        MenuBackupDb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuBackupDbActionPerformed(evt);
+            }
+        });
+        jMenu1.add(MenuBackupDb);
+
+        jMenuBar1.add(jMenu1);
+
         MenuLogout.setText("Logout");
         MenuLogout.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -314,6 +328,11 @@ public class FormUtama extends javax.swing.JFrame {
         showForm(fl);
     }//GEN-LAST:event_MenuLapKasActionPerformed
 
+    private void MenuBackupDbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuBackupDbActionPerformed
+        FormBackupDatabase fbd = new FormBackupDatabase();
+        showForm(fbd);
+    }//GEN-LAST:event_MenuBackupDbActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -351,6 +370,7 @@ public class FormUtama extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem MenuAkun;
+    private javax.swing.JMenuItem MenuBackupDb;
     private javax.swing.JMenuItem MenuBooking;
     private javax.swing.JMenuItem MenuJurnal;
     private javax.swing.JMenuItem MenuLapKas;
@@ -363,6 +383,7 @@ public class FormUtama extends javax.swing.JFrame {
     private javax.swing.JMenu MenuTransaksi;
     private javax.swing.JMenuItem MenuUser;
     private javax.swing.JDesktopPane desktopPane;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;

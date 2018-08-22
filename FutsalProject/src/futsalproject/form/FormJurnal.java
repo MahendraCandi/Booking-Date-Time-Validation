@@ -30,7 +30,12 @@ public class FormJurnal extends javax.swing.JInternalFrame {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
-        model = new DefaultTableModel();
+        model = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         model.addColumn("No. Jurnal");
         model.addColumn("No. Transaksi");
         model.addColumn("Tanggal Jurnal");

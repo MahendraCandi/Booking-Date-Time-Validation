@@ -32,7 +32,12 @@ public class FormBooking extends javax.swing.JInternalFrame {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
-        model = new DefaultTableModel();
+        model = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         model.addColumn("Kode Booking");
         model.addColumn("Tgl. Booking");
         model.addColumn("Kode Pelanggan");

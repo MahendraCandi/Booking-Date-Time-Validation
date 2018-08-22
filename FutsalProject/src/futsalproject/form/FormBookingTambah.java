@@ -978,6 +978,9 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtUangDPKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtUangDPKeyTyped(evt);
+            }
         });
         jPanel8.add(txtUangDP, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, 247, 20));
 
@@ -1271,6 +1274,14 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
     private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
         lapCont.cetakBooking(txtKodeBooking.getText(), hargaSore, hargaMalam, totalTarif);
     }//GEN-LAST:event_btnCetakActionPerformed
+
+    private void txtUangDPKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUangDPKeyTyped
+        char c=evt.getKeyChar();
+        if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtUangDPKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

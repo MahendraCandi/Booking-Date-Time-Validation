@@ -23,13 +23,24 @@ public class FormLapangan extends javax.swing.JInternalFrame {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
-        model=new DefaultTableModel();
+        model=new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         model.addColumn("Kode Lapangan");
         model.addColumn("Jenis Lapangan");
         model.addColumn("Tarif");
         tableLapangan.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
         tidakAktif();
+        panjangKarakter();
     }
+    
+    private void panjangKarakter(){
+        txtTarif.setDocument(new PanjangKarakter(7));
+    }
+    
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
@@ -107,12 +118,14 @@ public class FormLapangan extends javax.swing.JInternalFrame {
         txtCari = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(85, 239, 196));
+
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("Kode Lapngan");
+        jLabel1.setText("Kode Lapangan");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
@@ -160,6 +173,11 @@ public class FormLapangan extends javax.swing.JInternalFrame {
         jLabel4.setText("Tarif");
 
         txtTarif.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTarif.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTarifKeyTyped(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -294,6 +312,14 @@ public class FormLapangan extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtCariKeyPressed
 
+    private void txtTarifKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTarifKeyTyped
+        char c=evt.getKeyChar();
+        if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTarifKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHapus;
@@ -326,7 +352,6 @@ public class FormLapangan extends javax.swing.JInternalFrame {
     }
     
     private void aktif(){
-        txtKode.setEnabled(true);
         cmbJenis.setEnabled(true);
         txtTarif.setEnabled(true);
         txtCari.setEnabled(true);

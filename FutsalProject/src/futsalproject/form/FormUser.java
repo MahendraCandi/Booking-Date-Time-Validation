@@ -23,13 +23,24 @@ public class FormUser extends javax.swing.JInternalFrame {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
-        model=new DefaultTableModel();
+        model=new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         model.addColumn("Kode User");
         model.addColumn("Nama");
         model.addColumn("Hak Akses");
         model.addColumn("Password");
         tableUser.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
         tidakAktif();
+        panjangKarakter();
+    }
+    
+    private void panjangKarakter(){
+        txtNama.setDocument(new PanjangKarakter(50));
+        txtPassword.setDocument(new PanjangKarakter(20));
     }
     
     private void showTable(){
@@ -261,7 +272,6 @@ public class FormUser extends javax.swing.JInternalFrame {
         });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(51, 51, 51));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("Cari");
 

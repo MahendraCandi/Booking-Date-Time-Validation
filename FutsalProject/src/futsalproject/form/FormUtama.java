@@ -63,7 +63,7 @@ public class FormUtama extends javax.swing.JFrame {
         MenuLaporan = new javax.swing.JMenu();
         MenuLapPenyewaan = new javax.swing.JMenuItem();
         MenuLapKas = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        MenuUtility = new javax.swing.JMenu();
         MenuBackupDb = new javax.swing.JMenuItem();
         MenuLogout = new javax.swing.JMenu();
 
@@ -240,17 +240,19 @@ public class FormUtama extends javax.swing.JFrame {
 
         jMenuBar1.add(MenuLaporan);
 
-        jMenu1.setText("Utility");
+        MenuUtility.setText("Utility");
 
+        MenuBackupDb.setBackground(new java.awt.Color(255, 255, 255));
         MenuBackupDb.setText("Backup Database");
+        MenuBackupDb.setOpaque(true);
         MenuBackupDb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MenuBackupDbActionPerformed(evt);
             }
         });
-        jMenu1.add(MenuBackupDb);
+        MenuUtility.add(MenuBackupDb);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(MenuUtility);
 
         MenuLogout.setText("Logout");
         MenuLogout.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -382,8 +384,8 @@ public class FormUtama extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuSewa;
     private javax.swing.JMenu MenuTransaksi;
     private javax.swing.JMenuItem MenuUser;
+    private javax.swing.JMenu MenuUtility;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
@@ -452,4 +454,14 @@ public class FormUtama extends javax.swing.JFrame {
     public void setMenuUser(javax.swing.JMenuItem MenuUser) {
         this.MenuUser = MenuUser;
     }
+
+    public javax.swing.JMenu getMenuUtility() {
+        return MenuUtility;
+    }
+
+    public void setMenuUtility(javax.swing.JMenu MenuUtility) {
+        this.MenuUtility = MenuUtility;
+    }
+    
+    
 }

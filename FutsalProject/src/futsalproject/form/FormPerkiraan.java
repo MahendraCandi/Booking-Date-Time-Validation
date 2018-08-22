@@ -23,12 +23,23 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
-        model=new DefaultTableModel();
+        model=new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         model.addColumn("Kode Perkiraan");
         model.addColumn("Nama Perkiraan");
         model.addColumn("Jenis Perkiraan");
         tablePerkiraan.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
         tidakAktif();
+        panjangKarakter();
+    }
+    
+    private void panjangKarakter(){
+        txtKodePerkiraan.setDocument(new PanjangKarakter(5));
+        txtNamaPerkiraan.setDocument(new PanjangKarakter(20));
     }
     
     private void showTable(){
@@ -108,6 +119,8 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
         txtCari = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(85, 239, 196));
+
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -149,6 +162,11 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
         jPanel2.add(btnHapus);
 
         txtKodePerkiraan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtKodePerkiraan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtKodePerkiraanKeyTyped(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -298,6 +316,14 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtCariKeyPressed
 
+    private void txtKodePerkiraanKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtKodePerkiraanKeyTyped
+        char c=evt.getKeyChar();
+        if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtKodePerkiraanKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHapus;
@@ -348,8 +374,10 @@ public class FormPerkiraan extends javax.swing.JInternalFrame {
     }
     
     private void simpan(){
-        if(txtNamaPerkiraan.getText().equalsIgnoreCase("")){
-            JOptionPane.showMessageDialog(null, "Masukan nama Akun!");
+        if(txtKodePerkiraan.getText().equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Masukan Kode Perkiraan!");
+        }else if(txtNamaPerkiraan.getText().equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Masukan nama Perkiraan!");
         }else{
             akun=aCont.findOneDataPerkiraan(txtKodePerkiraan.getText());
             DataPerkiraan a=new DataPerkiraan();

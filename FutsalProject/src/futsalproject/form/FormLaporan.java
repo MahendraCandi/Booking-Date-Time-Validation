@@ -65,7 +65,12 @@ public class FormLaporan extends javax.swing.JInternalFrame {
         Panel Penyewaan
     */
     private void tablePenyewaan(){
-        pModel = new DefaultTableModel();
+        pModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         pModel.addColumn("No. Transaksi");
         pModel.addColumn("Tgl. Sewa");
         pModel.addColumn("Team");
@@ -163,7 +168,12 @@ public class FormLaporan extends javax.swing.JInternalFrame {
     */
     
     private void tableKas(){
-        kasModel=new DefaultTableModel();
+        kasModel=new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         kasModel.addColumn("No.Jurnal");
         kasModel.addColumn("Tgl. Jurnal");
         kasModel.addColumn("No. Transaksi");

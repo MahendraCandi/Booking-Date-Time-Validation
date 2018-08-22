@@ -523,6 +523,9 @@ public class FormSewa extends javax.swing.JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtUangBayarKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtUangBayarKeyTyped(evt);
+            }
         });
         jPanel5.add(txtUangBayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 210, 30));
 
@@ -769,6 +772,14 @@ public class FormSewa extends javax.swing.JInternalFrame {
     private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
         lapCont.cetakPenyewaan(txtNoTrans.getText(), hargaSore, hargaMalam);
     }//GEN-LAST:event_btnCetakActionPerformed
+
+    private void txtUangBayarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUangBayarKeyTyped
+        char c=evt.getKeyChar();
+        if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtUangBayarKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

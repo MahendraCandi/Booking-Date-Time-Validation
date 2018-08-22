@@ -23,14 +23,27 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
-        model=new DefaultTableModel();
+        model=new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         model.addColumn("Kode Pelanggan");
         model.addColumn("Nama Pelanggan");
         model.addColumn("No. Handphone");
         model.addColumn("Alamat");
         tablePelanggan.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
         tidakAktif();
+        panjangKarakter();
     }
+    
+    private void panjangKarakter(){
+        txtNamaPelanggan.setDocument(new PanjangKarakter(50));
+        txtNoHP.setDocument(new PanjangKarakter(15));
+        txtAlamat.setDocument(new PanjangKarakter(100));
+    }
+    
     private void showTable(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
@@ -115,6 +128,8 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
         txtCari = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(85, 239, 196));
+
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -172,6 +187,11 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
         txtNoHP.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtNoHP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNoHPKeyTyped(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -324,6 +344,14 @@ public class FormPelanggan extends javax.swing.JInternalFrame {
             cariTable(txtCari.getText());
         }
     }//GEN-LAST:event_txtCariKeyPressed
+
+    private void txtNoHPKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNoHPKeyTyped
+        char c=evt.getKeyChar();
+        if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNoHPKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

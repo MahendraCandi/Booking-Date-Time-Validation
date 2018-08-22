@@ -352,7 +352,7 @@ public class FormBooking extends javax.swing.JInternalFrame {
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         int baris = tableBooking.getSelectedRow();
         if(baris == -1){
-            JOptionPane.showMessageDialog(null, "Pilih data yang mau dilihat!");
+            JOptionPane.showMessageDialog(null, "Pilih data yang mau diupdate!");
         }else{
             booking = bCont.findOneBookingIsExistInPenyewaan(tableBooking.getValueAt(baris, 0).toString());
             if(booking == null){

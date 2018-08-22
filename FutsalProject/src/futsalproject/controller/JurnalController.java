@@ -104,7 +104,7 @@ public class JurnalController implements Serializable{
         return list;
     }
     
-    public Object[] firstDateLasDate(){
+    public Object[] firstDateLastDate(){
         EntityManager em = getEntityManager();
         Object[] obj=new Object[2];
         try {

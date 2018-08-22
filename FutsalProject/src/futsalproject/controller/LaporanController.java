@@ -98,4 +98,28 @@ public class LaporanController implements Serializable{
             em.close();
         }
     }
+    
+    public void cetakLaporanKas(Date tglAwal, Date tglAkhir){
+        EntityManager em = null;
+        try{
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+            Connection connect=em.unwrap(Connection.class);
+            HashMap param = new HashMap();
+            Locale local=new Locale("id", "ID");
+            param.put(JRParameter.REPORT_LOCALE, local);
+            param.put("tgl_awal", tglAwal);
+            param.put("tgl_akhir", tglAkhir);
+            JasperPrint jprint=JasperFillManager.fillReport ( getClass().getResourceAsStream("/report/LaporanPengeluaranKAs.jasper"), param, connect);
+            JasperViewer viewer=new JasperViewer(jprint, false);
+            viewer.setFitPageZoomRatio();
+            viewer.setVisible(true);
+            connect.close();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Ups ada kesalahan! " + e.getMessage());
+            e.printStackTrace();
+        }finally{
+            em.close();
+        }
+    }
 }

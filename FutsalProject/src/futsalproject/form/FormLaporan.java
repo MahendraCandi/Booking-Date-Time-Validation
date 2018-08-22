@@ -42,6 +42,8 @@ public class FormLaporan extends javax.swing.JInternalFrame {
     
     private void tampilLaporan(){
         if(tampil.equalsIgnoreCase("Laporan Penyewaan")){
+            panelPenyewaan.setVisible(true);
+            panelKas.setVisible(false);
             tablePenyewaan();
             formatTglPenyewaan();
             showTablePenyewaan();
@@ -49,7 +51,13 @@ public class FormLaporan extends javax.swing.JInternalFrame {
             renderTableHargaPenyewaan();
             renderTableJamPenyewaan();
         }else if(tampil.equalsIgnoreCase("Laporan Kas")){
-            
+            panelPenyewaan.setVisible(false);
+            panelKas.setVisible(true);
+            tableKas();
+            formatTglKas();
+            showTableKas();
+            renderTableTglKas();
+            renderTableHargaKas();
         }
     }
     
@@ -180,7 +188,54 @@ public class FormLaporan extends javax.swing.JInternalFrame {
         tableKas.setModel(kasModel);
     }
     
-    // BUAT METHOD JURNAL PENGELUARAN KAS!
+    private void firstDateLastDateKas(){
+        Object[] obj=jCont.firstDateLastDate();
+        if(obj[0]==null && obj[1]==null){
+            jdcTglAwalKas.setDate(new Date());
+            jdcTglAkhirKas.setDate(new Date());
+        }else{
+            jdcTglAwalKas.setDate((Date) obj[0]);
+            jdcTglAkhirKas.setDate((Date) obj[1]);
+        }
+    }
+    
+    private void renderTableHargaKas(){
+        TableCellRenderer tbr = new DefaultTableCellRenderer(){
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus,
+                    int row, int column){
+                if(value instanceof Number){
+                    value = myFormatter.format(value);
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        };
+        tableKas.getColumnModel().getColumn(3).setCellRenderer(tbr);
+    }
+    
+    private void renderTableTglKas(){
+        TableCellRenderer tbr = new DefaultTableCellRenderer(){
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus,
+                    int row, int column){
+                if(value instanceof Date){
+                    value = sdfTgl.format(value);
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        };
+        tableKas.getColumnModel().getColumn(1).setCellRenderer(tbr);
+    }
+    
+    private void formatTglKas(){
+        jdcTglAwalKas.setMaxSelectableDate(new Date());
+        jdcTglAkhirKas.setMaxSelectableDate(new Date());
+        jdcTglAwalKas.setLocale(Locale.forLanguageTag("id-ID"));
+        jdcTglAkhirKas.setLocale(Locale.forLanguageTag("id-ID"));
+        firstDateLastDateKas();
+        jdcTglAwalKas.setDateFormatString("dd MMMM yyyy");
+        jdcTglAkhirKas.setDateFormatString("dd MMMM yyyy");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -457,11 +512,24 @@ public class FormLaporan extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCetakSewaActionPerformed
 
     private void btnTampilKasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTampilKasActionPerformed
-        // TODO add your handling code here:
+        if(jdcTglAkhirKas.getCalendar().before(jdcTglAwalKas.getCalendar())){
+            JOptionPane.showMessageDialog(null, "Tanggal Tidak Valid!");
+        }else{
+            showTableKas();
+        }
     }//GEN-LAST:event_btnTampilKasActionPerformed
 
     private void btnCetakKasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakKasActionPerformed
-        // TODO add your handling code here:
+        int baris = tableKas.getRowCount();
+        if(jdcTglAkhirKas.getCalendar().before(jdcTglAwalKas.getCalendar())){
+            JOptionPane.showMessageDialog(null, "Tanggal Tidak Valid!");
+        }else{
+            if(baris == -1){
+                JOptionPane.showMessageDialog(null, "Tidak ada data yang tampil!");
+            }else{
+                lapCont.cetakLaporanKas(jdcTglAwalKas.getDate(), jdcTglAkhirKas.getDate());
+            }
+        }
     }//GEN-LAST:event_btnCetakKasActionPerformed
 
 

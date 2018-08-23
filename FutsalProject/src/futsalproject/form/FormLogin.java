@@ -82,9 +82,9 @@ public class FormLogin extends javax.swing.JFrame {
                         formUtama.getMenuAkun().setVisible(false);
                         formUtama.getMenuLapangan().setVisible(false);
                         formUtama.getMenuPelanggan().setVisible(false);
+                        formUtama.getMenuUtility().setVisible(false);
                     }else if(hakAkses.equalsIgnoreCase("Kasir")){
                         formUtama.getMenuUser().setVisible(false);
-                        formUtama.getMenuUtility().setVisible(false);
                     }
                     this.dispose();
                     formUtama.setVisible(true);

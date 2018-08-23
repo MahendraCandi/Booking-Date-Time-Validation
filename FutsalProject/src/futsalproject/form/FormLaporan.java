@@ -360,6 +360,7 @@ public class FormLaporan extends javax.swing.JInternalFrame {
                         .addComponent(jdcTglAkhirSewa, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnTampilSewa)
+                        .addGap(0, 0, 0)
                         .addComponent(btnCetakSewa)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -398,7 +399,7 @@ public class FormLaporan extends javax.swing.JInternalFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Form Laporan Pengeluaran Kas");
+        jLabel6.setText("Form Laporan Penerimaan Kas");
 
         jSeparator2.setForeground(new java.awt.Color(255, 255, 255));
 

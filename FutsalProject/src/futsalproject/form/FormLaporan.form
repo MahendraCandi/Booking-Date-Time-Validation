@@ -320,7 +320,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Form Laporan Pengeluaran Kas"/>
+            <Property name="text" type="java.lang.String" value="Form Laporan Penerimaan Kas"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JSeparator" name="jSeparator2">

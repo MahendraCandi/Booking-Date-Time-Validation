@@ -296,6 +296,9 @@ public class FormBookingTambah extends javax.swing.JInternalFrame {
         totalTarif = (totalTarif + hariLibur()) - diskonMember() ;
         txtTotalJam.setText(String.valueOf(totalJam));
         txtTotalTarif.setText(String.valueOf(totalTarif));
+        double dp = Math.floor(totalTarif/2.0);
+        txtUangDP.setText(String.valueOf(dp));
+        
     }
     
     private void comboBoxJenisLapangan(){

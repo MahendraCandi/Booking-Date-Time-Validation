@@ -30,7 +30,7 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
     PenyewaanController pCont = new PenyewaanController(FutsalProject.emf);
     DataPerkiraan perkiraan = new DataPerkiraan();
     DataPerkiraanController pkCont = new DataPerkiraanController(FutsalProject.emf);
-    DefaultTableModel model;
+//    DefaultTableModel model;
     String kodePerkiraan1, kodePerkiraan2;
     double debit1, debit2, kredit1, kredit2;
     DecimalFormat myFormatter = new DecimalFormat("###,###.##");
@@ -43,11 +43,20 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
         ((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
         this.setBorder(null);
         this.jurnal = jurnal;
-        model = (DefaultTableModel) tableJurnal.getModel();
-        tableJurnal.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
+        
+        /*
+            **REVISI**
+            tidak perlu menggunkan table
+        */
+//        model = (DefaultTableModel) tableJurnal.getModel();
+//        tableJurnal.getTableHeader().setFont(new Font("Tahoma Plain", Font.BOLD, 11));
+        
         tidakAktif();
         validasiJurnal();
         
+        // revisi tidak usah menggunakan tombol tambah 
+        // pada panel jurnal dan tablenya
+        panelButtonDetailJurnal.setVisible(false);
     }
     
     private void validasiJurnal(){
@@ -58,7 +67,7 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
             jdcTanggal.setDateFormatString("dd MMMM yyyy");
             Object[] objNo = {jurnal.getNoTrans()};
             cmbTrans.setModel(new DefaultComboBoxModel(objNo));
-            panelJurnal.setVisible(false);
+            //panelJurnal.setVisible(false);
             btnSimpan.setVisible(false);
             btnTambah.setVisible(false);
             btnHapus.setVisible(false);
@@ -73,8 +82,22 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                 obj[3] = (String) item[2];
                 obj[4] = myFormatter.format(detail.getDebet());
                 obj[5] = myFormatter.format(detail.getKredit());
-                model.addRow(obj);
-                i++;
+                //model.addRow(obj);
+                //i++;
+                if(txtKdPerkiraan1.getText().isEmpty()){
+                    txtKdPerkiraan1.setText(detail.getKdPerkiraan());
+                    cmbNmPerkiraan1.addItem((String) item[1]);
+                    txtJenisPerkiraan1.setText((String) item[2]);
+                    txtDebit1.setText(myFormatter.format(detail.getDebet()));
+                    txtKredit1.setText(myFormatter.format(detail.getKredit()));
+                }else{
+                    txtKdPerkiraan2.setText(detail.getKdPerkiraan());
+                    cmbNmPerkiraan2.addItem((String) item[1]);
+                    txtJenisPerkiraan2.setText((String) item[2]);
+                    txtDebit2.setText(myFormatter.format(detail.getDebet()));
+                    txtKredit2.setText(myFormatter.format(detail.getKredit()));
+                }
+                
             }
         }else{
             aktif();
@@ -118,12 +141,12 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
         comboBoxTransaksi();
         comboBoxPerkiraan();
         clearJurnal();
-        clearList();
+//        clearList();
         cmbTrans.setSelectedIndex(0);
     }
     
     private void simpan(){
-        int row = tableJurnal.getRowCount();
+//        int row = tableJurnal.getRowCount();
         if(cmbTrans.getSelectedItem().equals("Pilih")){
             JOptionPane.showMessageDialog(null, "Pilih nomor Transaksi!");
         }else if(jdcTanggal.getDate() == null){
@@ -134,8 +157,8 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Kode perkiraan tidak lengkap!");
         }else if(txtDebit1.getText().isEmpty() || txtDebit2.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Debit Kredit tidak lengkap!");
-        }else if(row == 0){
-            JOptionPane.showMessageDialog(null, "Data table masih kosong!");
+//        }else if(row == 0){
+//            JOptionPane.showMessageDialog(null, "Data table masih kosong!");
         }else{
             try {
                 jurnal = new Jurnal();
@@ -145,16 +168,26 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                 jCont.save(jurnal);
 
                 detail = new JurnalDetail();
-                for(int i = 0; i < row; i++){
-                    detail.setNoJurnal(txtNoJurnal.getText());
-                    detail.setKdPerkiraan(tableJurnal.getValueAt(i, 1).toString());
-                    number = myFormatter.parse(tableJurnal.getValueAt(i, 4).toString());
+                detail.setNoJurnal(txtNoJurnal.getText());
+                detail.setKdPerkiraan(txtKdPerkiraan1.getText());
+                number = myFormatter.parse(txtDebit1.getText());
+                detail.setDebet(number.doubleValue());
+                number = myFormatter.parse(txtKredit1.getText());
+                detail.setKredit(number.doubleValue());
+                jdCont.save(detail);
+                
+                detail = new JurnalDetail();
+                detail.setNoJurnal(txtNoJurnal.getText());
+                detail.setKdPerkiraan(txtKdPerkiraan2.getText());
+                number = myFormatter.parse(txtDebit2.getText());
+                detail.setDebet(number.doubleValue());
+                number = myFormatter.parse(txtKredit2.getText());
+                detail.setKredit(number.doubleValue());
+                jdCont.save(detail);
+                
+                //for(int i = 0; i < row; i++){
                     
-                    detail.setDebet(number.doubleValue());
-                    number = myFormatter.parse(tableJurnal.getValueAt(i, 5).toString());
-                    detail.setKredit(number.doubleValue());
-                    jdCont.save(detail);
-                }
+                //}
                 JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
                 btnKembaliActionPerformed(null);
             } catch (Exception e) {
@@ -247,43 +280,43 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
         cmbNmPerkiraan2.setSelectedIndex(0);
     }
     
-    private void addData1ToTable(){
-        Object[] obj = new Object[6];
-        obj[1] = txtKdPerkiraan1.getText();
-        obj[2] = cmbNmPerkiraan1.getSelectedItem();
-        obj[3] = txtJenisPerkiraan1.getText();
-        obj[4] = txtDebit1.getText();
-        obj[5] = txtKredit1.getText();
-        model.addRow(obj);
-        noTable();
-    }
-    
-    private void addData2ToTable(){
-        Object[] obj = new Object[6];
-        obj[1] = txtKdPerkiraan2.getText();
-        obj[2] = cmbNmPerkiraan2.getSelectedItem();
-        obj[3] = txtJenisPerkiraan2.getText();
-        obj[4] = txtDebit2.getText();
-        obj[5] = txtKredit2.getText();
-        model.addRow(obj);
-        noTable();
-    }
-    
-    private void noTable(){
-        int row=model.getRowCount(); 
-        for(int a=0; a<row ;a++){
-            String no=String.valueOf(a+1);
-            tableJurnal.setValueAt(no, a, 0); 
-        }
-    }
-    
-    private void clearList(){
-        int row=tableJurnal.getRowCount();
-        while(row>0){
-            row--;
-            model.removeRow(row);
-        }
-    }
+//    private void addData1ToTable(){
+//        Object[] obj = new Object[6];
+//        obj[1] = txtKdPerkiraan1.getText();
+//        obj[2] = cmbNmPerkiraan1.getSelectedItem();
+//        obj[3] = txtJenisPerkiraan1.getText();
+//        obj[4] = txtDebit1.getText();
+//        obj[5] = txtKredit1.getText();
+//        model.addRow(obj);
+//        noTable();
+//    }
+//    
+//    private void addData2ToTable(){
+//        Object[] obj = new Object[6];
+//        obj[1] = txtKdPerkiraan2.getText();
+//        obj[2] = cmbNmPerkiraan2.getSelectedItem();
+//        obj[3] = txtJenisPerkiraan2.getText();
+//        obj[4] = txtDebit2.getText();
+//        obj[5] = txtKredit2.getText();
+//        model.addRow(obj);
+//        noTable();
+//    }
+//    
+//    private void noTable(){
+//        int row=model.getRowCount(); 
+//        for(int a=0; a<row ;a++){
+//            String no=String.valueOf(a+1);
+//            tableJurnal.setValueAt(no, a, 0); 
+//        }
+//    }
+//    
+//    private void clearList(){
+//        int row=tableJurnal.getRowCount();
+//        while(row>0){
+//            row--;
+//            model.removeRow(row);
+//        }
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -316,7 +349,7 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
         txtJenisPerkiraan1 = new javax.swing.JTextField();
         txtJenisPerkiraan2 = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
+        panelButtonDetailJurnal = new javax.swing.JPanel();
         btnTambah = new javax.swing.JButton();
         btnHapus = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -326,8 +359,6 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jdcTanggal = new com.toedter.calendar.JDateChooser();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableJurnal = new javax.swing.JTable();
 
         jPanel1.setBackground(new java.awt.Color(0, 184, 148));
 
@@ -427,8 +458,8 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("Jenis Perkiraan");
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.LINE_AXIS));
+        panelButtonDetailJurnal.setBackground(new java.awt.Color(255, 255, 255));
+        panelButtonDetailJurnal.setLayout(new javax.swing.BoxLayout(panelButtonDetailJurnal, javax.swing.BoxLayout.LINE_AXIS));
 
         btnTambah.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnTambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Plus Math_20px.png"))); // NOI18N
@@ -438,7 +469,7 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                 btnTambahActionPerformed(evt);
             }
         });
-        jPanel5.add(btnTambah);
+        panelButtonDetailJurnal.add(btnTambah);
 
         btnHapus.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Trash_20px.png"))); // NOI18N
@@ -448,7 +479,7 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                 btnHapusActionPerformed(evt);
             }
         });
-        jPanel5.add(btnHapus);
+        panelButtonDetailJurnal.add(btnHapus);
 
         javax.swing.GroupLayout panelJurnalLayout = new javax.swing.GroupLayout(panelJurnal);
         panelJurnal.setLayout(panelJurnalLayout);
@@ -485,13 +516,13 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelJurnalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel10)
                                 .addComponent(txtKredit1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelButtonDetailJurnal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelJurnalLayout.setVerticalGroup(
             panelJurnalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelJurnalLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addContainerGap()
                 .addGroup(panelJurnalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panelJurnalLayout.createSequentialGroup()
                         .addComponent(txtJenisPerkiraan1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -527,8 +558,8 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                                 .addComponent(cmbNmPerkiraan2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(txtKredit2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelButtonDetailJurnal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(0, 184, 148));
@@ -607,26 +638,6 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tableJurnal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        tableJurnal.setForeground(new java.awt.Color(51, 51, 51));
-        tableJurnal.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "No.", "Kode Perkiraan", "Nama Perkiraan", "Jenis Perkiraan", "Debit", "Kredit"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, true, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(tableJurnal);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -645,7 +656,6 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                         .addGap(50, 50, 50)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panelJurnal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -664,9 +674,7 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelJurnal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(181, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -737,23 +745,27 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
             }else if(debit != kredit){
                 JOptionPane.showMessageDialog(null, "Nominal debit kredit tidak balance!");
             }else{
-                addData1ToTable();
-                addData2ToTable();
+//                addData1ToTable();
+//                addData2ToTable();
             }
         }
     }//GEN-LAST:event_btnTambahActionPerformed
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
 
-        clearList();
+//        clearList();
     }//GEN-LAST:event_btnHapusActionPerformed
 
     private void cmbTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTransActionPerformed
-        if(tableJurnal.getRowCount() > 0){
+        if(!txtKdPerkiraan1.getText().isEmpty() || !txtKdPerkiraan2.getText().isEmpty()){
             getToolkit().beep();
             JOptionPane.showMessageDialog(null, "Nomor transaksi berubah!");
             clearJurnal();
         }
+        
+//        if(tableJurnal.getRowCount() > 0){
+            
+//        }
     }//GEN-LAST:event_cmbTransActionPerformed
 
 
@@ -777,12 +789,10 @@ public class FormJurnalTambah extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private com.toedter.calendar.JDateChooser jdcTanggal;
+    private javax.swing.JPanel panelButtonDetailJurnal;
     private javax.swing.JPanel panelJurnal;
-    private javax.swing.JTable tableJurnal;
     private javax.swing.JTextField txtDebit1;
     private javax.swing.JTextField txtDebit2;
     private javax.swing.JTextField txtJenisPerkiraan1;

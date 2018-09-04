@@ -759,7 +759,8 @@ public class FormSewa extends javax.swing.JInternalFrame {
         double hariLibur = Double.parseDouble(txtHariLibur.getText());
         txtTotalSewa.setText(String.valueOf((totalTarif + hariLibur) - diskonMember()));
         double dp = Double.parseDouble(txtUangDp.getText());
-        txtSisaSewa.setText(String.valueOf(totalTarif - dp));
+        double ttlSewa = Double.parseDouble(txtTotalSewa.getText());
+        txtSisaSewa.setText(String.valueOf(ttlSewa - dp));
         txtUangBayar.requestFocus();
     }//GEN-LAST:event_cmbKodeBookingActionPerformed
 
